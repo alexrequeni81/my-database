@@ -1,12 +1,26 @@
 [
     {
-        "name": "John Doe",
-        "age": 30,
-        "city": "New York"
+        "REFERENCIA": "REF-001",
+        "DESCRIPCIÓN": "Cable USB",
+        "MÁQUINA": "PC-123",
+        "GRUPO": "Electrónica",
+        "COMENTARIO": "Cable para conectar impresora",
+        "CANT.": 5
     },
     {
-        "name": "Jane Smith",
-        "age": 25,
-        "city": "London"
+        "REFERENCIA": "REF-002",
+        "DESCRIPCIÓN": "Teclado",
+        "MÁQUINA": "PC-456",
+        "GRUPO": "Electrónica",
+        "COMENTARIO": "Teclado inalámbrico",
+        "CANT.": 2
+    },
+    {
+        "REFERENCIA": "REF-003",
+        "DESCRIPCIÓN": "Monitor",
+        "MÁQUINA": "PC-789",
+        "GRUPO": "Electrónica",
+        "COMENTARIO": "Monitor 27 pulgadas",
+        "CANT.": 1
     }
 ]
