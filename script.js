@@ -17,22 +17,26 @@ fetch(dataUrl)
 function displayData(data) {
     const tableBody = dataTable.querySelector("tbody");
     tableBody.innerHTML = ""; // Clear previous data
-
     data.forEach(item => {
         const row = tableBody.insertRow();
-        const nameCell = row.insertCell();
-        const ageCell = row.insertCell();
-        const cityCell = row.insertCell();
-        const actionsCell = row.insertCell();
-
-        nameCell.textContent = item.name;
-        ageCell.textContent = item.age;
-        cityCell.textContent = item.city;
+        const referenciaCell = row.insertCell();
+        const descripcionCell = row.insertCell();
+        const maquinaCell = row.insertCell();
+        const grupoCell = row.insertCell();
+        const comentarioCell = row.insertCell();
+        const cantCell = row.insertCell();
+        const actionsCell = row.insertCell(); // Actions column
+        referenciaCell.textContent = item.REFERENCIA;
+        descripcionCell.textContent = item.DESCRIPCIÓN;
+        maquinaCell.textContent = item.MÁQUINA;
+        grupoCell.textContent = item.GRUPO;
+        comentarioCell.textContent = item.COMENTARIO;
+        cantCell.textContent = item.CANT.;
 
         // Add Edit/Delete buttons
         actionsCell.innerHTML = `
-            <button data-id="${item.name}" class="editBtn">Edit</button>
-            <button data-id="${item.name}" class="deleteBtn">Delete</button>
+            <button data-id="${item.REFERENCIA}" class="editBtn">Edit</button>
+            <button data-id="${item.REFERENCIA}" class="deleteBtn">Delete</button>
         `;
     });
 
