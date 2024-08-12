@@ -1,4 +1,4 @@
-const dataUrl = "https://raw.githubusercontent.com/YOUR_USERNAME/my-database/main/data.json"; 
+const dataUrl = "https://raw.githubusercontent.com/alexrequeni81/my-database/main/data.json"; 
 const dataTable = document.getElementById("dataTable");
 const searchInput = document.getElementById("searchInput");
 const addBtn = document.getElementById("addBtn");
