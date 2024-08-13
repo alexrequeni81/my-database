@@ -5,6 +5,7 @@ import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebase
 const firebaseConfig = {
     apiKey: "AIzaSyCRG0qopwJGCRVs8sUK04b5dkpUeDwvYjQ",
     authDomain: "my-database-12eeb.firebaseapp.com",
+    databaseURL: "https://my-database-12eeb-default-rtdb.firebaseio.com",
     projectId: "my-database-12eeb",
     storageBucket: "my-database-12eeb.appspot.com",
     messagingSenderId: "546769208649",
