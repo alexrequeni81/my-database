@@ -1,6 +1,22 @@
-// script.js
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+
+// Configuración de Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyCRG0qopwJGCRVs8sUK04b5dkpUeDwvYjQ",
+    authDomain: "my-database-12eeb.firebaseapp.com",
+    projectId: "my-database-12eeb",
+    storageBucket: "my-database-12eeb.appspot.com",
+    messagingSenderId: "546769208649",
+    appId: "1:546769208649:web:db89f3ffcaf32014668698",
+    measurementId: "G-QNZ64RB4JJ"
+};
+
+// Inicializar Firebase
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
 document.addEventListener('DOMContentLoaded', () => {
-    const dataUrl = 'data.json';
     const tableBody = document.querySelector('#data-table tbody');
     const formContainer = document.getElementById('form-container');
     const formTitle = document.getElementById('form-title');
@@ -11,13 +27,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let data = [];
     let editIndex = -1;
 
-    // Fetch data
-    fetch(dataUrl)
-        .then(response => response.json())
-        .then(json => {
-            data = json;
-            renderTable();
-        });
+    // Fetch data from Firebase
+    const dataRef = ref(db, 'data');
+    onValue(dataRef, (snapshot) => {
+        data = snapshot.val() || [];
+        renderTable();
+    });
 
     // Render table
     function renderTable() {
@@ -88,17 +103,8 @@ document.addEventListener('DOMContentLoaded', () => {
         saveData();
     };
 
-    // Save Data
+    // Save Data to Firebase
     function saveData() {
-        fetch(dataUrl, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        }).then(response => response.json())
-          .then(json => {
-              console.log('Data saved', json);
-          });
+        set(dataRef, data);
     }
 });
