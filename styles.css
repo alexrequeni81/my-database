@@ -1,0 +1,32 @@
+/* styles.css */
+body {
+    font-family: Arial, sans-serif;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+#form-container {
+    margin-top: 20px;
+}
+
+#form-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+#form-container label {
+    margin-top: 10px;
+}
