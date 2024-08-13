@@ -1,42 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>GitHub Database Manager</title>
-    <style>
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-        th, td {
-            text-align: left;
-            padding: 8px;
-            border: 1px solid black;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Tabla</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>GitHub Database Manager</h1>
-
-    <div>
-        <input type="text" id="searchInput" placeholder="Search...">
-        <button id="addBtn">Add Data</button>
-    </div>
-
-    <table id="dataTable">
+    <h1>Gestión de Tabla</h1>
+    <input type="text" id="search" placeholder="Buscar...">
+    <table id="data-table">
         <thead>
             <tr>
-                <th>REFERENCIA</th>
-                <th>DESCRIPCIÓN</th>
-                <th>MÁQUINA</th>
-                <th>GRUPO</th>
-                <th>COMENTARIO</th>
-                <th>CANT.</th>
-                <th>Actions</th> 
+                <th>Referencia</th>
+                <th>Descripción</th>
+                <th>Máquina</th>
+                <th>Grupo</th>
+                <th>Comentario</th>
+                <th>Cantidad</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
+            <!-- Datos se cargarán aquí -->
         </tbody>
     </table>
+    <button id="add-row-btn">Añadir Fila</button>
+
+    <!-- Formulario para Añadir/Editar Fila -->
+    <div id="form-container" style="display:none;">
+        <h2 id="form-title">Añadir Fila</h2>
+        <form id="data-form">
+            <label for="referencia">Referencia:</label>
+            <input type="text" id="referencia" name="referencia" required>
+            <label for="descripcion">Descripción:</label>
+            <input type="text" id="descripcion" name="descripcion" required>
+            <label for="maquina">Máquina:</label>
+            <input type="text" id="maquina" name="maquina" required>
+            <label for="grupo">Grupo:</label>
+            <input type="text" id="grupo" name="grupo" required>
+            <label for="comentario">Comentario:</label>
+            <input type="text" id="comentario" name="comentario">
+            <label for="cantidad">Cantidad:</label>
+            <input type="number" id="cantidad" name="cantidad" required>
+            <button type="submit">Guardar</button>
+            <button type="button" id="cancel-btn">Cancelar</button>
+        </form>
+    </div>
 
     <script src="script.js"></script>
 </body>
