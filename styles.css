@@ -1,32 +1,42 @@
-/* styles.css */
 body {
     font-family: Arial, sans-serif;
+    margin: 20px;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
-}
-
-table, th, td {
-    border: 1px solid black;
+    margin-bottom: 20px;
 }
 
 th, td {
-    padding: 8px;
+    border: 1px solid #dddddd;
     text-align: left;
+    padding: 8px;
+}
+
+th {
+    background-color: #f2f2f2;
 }
 
 #form-container {
     margin-top: 20px;
+    border: 1px solid #dddddd;
+    padding: 20px;
 }
 
-#form-container form {
-    display: flex;
-    flex-direction: column;
-}
-
-#form-container label {
+label {
+    display: block;
     margin-top: 10px;
+}
+
+input[type="text"], input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+}
+
+button {
+    margin-top: 10px;
+    padding: 10px 15px;
 }
