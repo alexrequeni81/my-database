@@ -1,111 +1,143 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
-
-// Configuración de Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyCRG0qopwJGCRVs8sUK04b5dkpUeDwvYjQ",
-    authDomain: "my-database-12eeb.firebaseapp.com",
-    databaseURL: "https://my-database-12eeb-default-rtdb.firebaseio.com",
-    projectId: "my-database-12eeb",
-    storageBucket: "my-database-12eeb.appspot.com",
-    messagingSenderId: "546769208649",
-    appId: "1:546769208649:web:db89f3ffcaf32014668698",
-    measurementId: "G-QNZ64RB4JJ"
-};
-
-// Inicializar Firebase
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
 document.addEventListener('DOMContentLoaded', () => {
-    const tableBody = document.querySelector('#data-table tbody');
-    const formContainer = document.getElementById('form-container');
-    const formTitle = document.getElementById('form-title');
-    const dataForm = document.getElementById('data-form');
-    const addRowBtn = document.getElementById('add-row-btn');
-    const cancelBtn = document.getElementById('cancel-btn');
+    let db;
 
-    let data = [];
-    let editIndex = -1;
+    // Abre la base de datos
+    const request = indexedDB.open('MiBaseDeDatos', 1);
 
-    // Fetch data from Firebase
-    const dataRef = ref(db, 'data');
-    onValue(dataRef, (snapshot) => {
-        data = snapshot.val() || [];
-        renderTable();
+    request.onupgradeneeded = (event) => {
+        db = event.target.result;
+        const objectStore = db.createObjectStore('records', { keyPath: 'id', autoIncrement: true });
+        objectStore.createIndex('referencia', 'referencia', { unique: false });
+        objectStore.createIndex('descripcion', 'descripcion', { unique: false });
+        objectStore.createIndex('maquina', 'maquina', { unique: false });
+        objectStore.createIndex('grupo', 'grupo', { unique: false });
+        objectStore.createIndex('comentario', 'comentario', { unique: false });
+        objectStore.createIndex('cantidad', 'cantidad', { unique: false });
+    };
+
+    request.onsuccess = (event) => {
+        db = event.target.result;
+        displayData();
+    };
+
+    request.onerror = (event) => {
+        console.error('Error al abrir la base de datos', event);
+    };
+
+    // Maneja el envío del formulario
+    document.getElementById('dataForm').addEventListener('submit', (event) => {
+        event.preventDefault();
+        const referencia = document.getElementById('referencia').value;
+        const descripcion = document.getElementById('descripcion').value;
+        const maquina = document.getElementById('maquina').value;
+        const grupo = document.getElementById('grupo').value;
+        const comentario = document.getElementById('comentario').value;
+        const cantidad = document.getElementById('cantidad').value;
+        const recordId = document.getElementById('recordId').value;
+
+        if (recordId) {
+            // Actualiza el registro existente
+            updateRecord(parseInt(recordId), referencia, descripcion, maquina, grupo, comentario, cantidad);
+        } else {
+            // Agrega un nuevo registro
+            addRecord(referencia, descripcion, maquina, grupo, comentario, cantidad);
+        }
     });
 
-    // Render table
-    function renderTable() {
-        tableBody.innerHTML = '';
-        data.forEach((row, index) => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${row.referencia}</td>
-                <td>${row.descripcion}</td>
-                <td>${row.maquina}</td>
-                <td>${row.grupo}</td>
-                <td>${row.comentario}</td>
-                <td>${row.cantidad}</td>
-                <td>
-                    <button onclick="editRow(${index})">Editar</button>
-                    <button onclick="deleteRow(${index})">Borrar</button>
-                </td>
-            `;
-            tableBody.appendChild(tr);
-        });
+    document.getElementById('clearBtn').addEventListener('click', () => {
+        clearForm();
+    });
+
+    function addRecord(referencia, descripcion, maquina, grupo, comentario, cantidad) {
+        const transaction = db.transaction(['records'], 'readwrite');
+        const objectStore = transaction.objectStore('records');
+        const request = objectStore.add({ referencia, descripcion, maquina, grupo, comentario, cantidad: parseInt(cantidad) });
+
+        request.onsuccess = () => {
+            displayData();
+            clearForm();
+        };
+
+        request.onerror = (event) => {
+            console.error('Error al agregar el registro', event);
+        };
     }
 
-    // Add Row
-    addRowBtn.addEventListener('click', () => {
-        formTitle.textContent = 'Añadir Fila';
-        dataForm.reset();
-        editIndex = -1;
-        formContainer.style.display = 'block';
-    });
+    function updateRecord(id, referencia, descripcion, maquina, grupo, comentario, cantidad) {
+        const transaction = db.transaction(['records'], 'readwrite');
+        const objectStore = transaction.objectStore('records');
+        const request = objectStore.put({ id, referencia, descripcion, maquina, grupo, comentario, cantidad: parseInt(cantidad) });
 
-    // Cancel Form
-    cancelBtn.addEventListener('click', () => {
-        formContainer.style.display = 'none';
-    });
+        request.onsuccess = () => {
+            displayData();
+            clearForm();
+        };
 
-    // Submit Form
-    dataForm.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const formData = new FormData(dataForm);
-        const row = Object.fromEntries(formData.entries());
+        request.onerror = (event) => {
+            console.error('Error al actualizar el registro', event);
+        };
+    }
 
-        if (editIndex === -1) {
-            data.push(row);
-        } else {
-            data[editIndex] = row;
-        }
+    function deleteRecord(id) {
+        const transaction = db.transaction(['records'], 'readwrite');
+        const objectStore = transaction.objectStore('records');
+        const request = objectStore.delete(id);
 
-        renderTable();
-        formContainer.style.display = 'none';
-        saveData();
-    });
+        request.onsuccess = () => {
+            displayData();
+        };
 
-    // Edit Row
-    window.editRow = function(index) {
-        formTitle.textContent = 'Editar Fila';
-        const row = data[index];
-        for (let key in row) {
-            dataForm.elements[key].value = row[key];
-        }
-        editIndex = index;
-        formContainer.style.display = 'block';
+        request.onerror = (event) => {
+            console.error('Error al borrar el registro', event);
+        };
+    }
+
+    function displayData() {
+        const objectStore = db.transaction('records').objectStore('records');
+        const tbody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+
+        objectStore.openCursor().onsuccess = (event) => {
+            const cursor = event.target.result;
+            if (cursor) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${cursor.value.referencia}</td>
+                    <td>${cursor.value.descripcion}</td>
+                    <td>${cursor.value.maquina}</td>
+                    <td>${cursor.value.grupo}</td>
+                    <td>${cursor.value.comentario}</td>
+                    <td>${cursor.value.cantidad}</td>
+                    <td>
+                        <button onclick="editRecord(${cursor.value.id}, '${cursor.value.referencia}', '${cursor.value.descripcion}', '${cursor.value.maquina}', '${cursor.value.grupo}', '${cursor.value.comentario}', ${cursor.value.cantidad})">Editar</button>
+                        <button onclick="deleteRecord(${cursor.value.id})">Borrar</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+                cursor.continue();
+            }
+        };
+    }
+
+    window.editRecord = (id, referencia, descripcion, maquina, grupo, comentario, cantidad) => {
+        document.getElementById('recordId').value = id;
+        document.getElementById('referencia').value = referencia;
+        document.getElementById('descripcion').value = descripcion;
+        document.getElementById('maquina').value = maquina;
+        document.getElementById('grupo').value = grupo;
+        document.getElementById('comentario').value = comentario;
+        document.getElementById('cantidad').value = cantidad;
     };
 
-    // Delete Row
-    window.deleteRow = function(index) {
-        data.splice(index, 1);
-        renderTable();
-        saveData();
-    };
+    window.deleteRecord = deleteRecord;
 
-    // Save Data to Firebase
-    function saveData() {
-        set(dataRef, data);
+    function clearForm() {
+        document.getElementById('recordId').value = '';
+        document.getElementById('referencia').value = '';
+        document.getElementById('descripcion').value = '';
+        document.getElementById('maquina').value = '';
+        document.getElementById('grupo').value = '';
+        document.getElementById('comentario').value = '';
+        document.getElementById('cantidad').value = '';
     }
 });
