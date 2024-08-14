@@ -1,49 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Firebase Data Table</title>
+    <title>Gestión de Tabla con IndexedDB</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Data Table</h1>
-    <table id="data-table">
+    <h1>Gestión de Tabla</h1>
+    <form id="dataForm">
+        <label for="referencia">Referencia:</label>
+        <input type="text" id="referencia" required>
+        
+        <label for="descripcion">Descripción:</label>
+        <input type="text" id="descripcion" required>
+        
+        <label for="maquina">Máquina:</label>
+        <input type="text" id="maquina" required>
+        
+        <label for="grupo">Grupo:</label>
+        <input type="text" id="grupo" required>
+        
+        <label for="comentario">Comentario:</label>
+        <input type="text" id="comentario" required>
+        
+        <label for="cantidad">Cant.:</label>
+        <input type="number" id="cantidad" required>
+        
+        <input type="hidden" id="recordId">
+        <button type="submit">Guardar</button>
+        <button type="button" id="clearBtn">Limpiar</button>
+    </form>
+
+    <table id="dataTable">
         <thead>
             <tr>
-                <th>Referencia</th>
-                <th>Descripción</th>
-                <th>Máquina</th>
-                <th>Grupo</th>
-                <th>Comentario</th>
-                <th>Cantidad</th>
+                <th>REFERENCIA</th>
+                <th>DESCRIPCIÓN</th>
+                <th>MÁQUINA</th>
+                <th>GRUPO</th>
+                <th>COMENTARIO</th>
+                <th>CANT.</th>
                 <th>Acciones</th>
             </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+        </tbody>
     </table>
-    <button id="add-row-btn">Añadir Fila</button>
 
-    <div id="form-container" style="display:none;">
-        <h2 id="form-title">Añadir Fila</h2>
-        <form id="data-form">
-            <label for="referencia">Referencia:</label>
-            <input type="text" id="referencia" name="referencia" required><br>
-            <label for="descripcion">Descripción:</label>
-            <input type="text" id="descripcion" name="descripcion" required><br>
-            <label for="maquina">Máquina:</label>
-            <input type="text" id="maquina" name="maquina" required><br>
-            <label for="grupo">Grupo:</label>
-            <input type="text" id="grupo" name="grupo" required><br>
-            <label for="comentario">Comentario:</label>
-            <input type="text" id="comentario" name="comentario" required><br>
-            <label for="cantidad">Cantidad:</label>
-            <input type="number" id="cantidad" name="cantidad" required><br>
-            <button type="submit">Guardar</button>
-            <button type="button" id="cancel-btn">Cancelar</button>
-        </form>
-    </div>
-
-    <script type="module" src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
