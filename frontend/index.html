@@ -64,13 +64,15 @@
                 } else {
                     data.forEach(part => {
                         const row = document.createElement('tr');
+
+                        // Manejo de campos vacíos, mostrando un guion si está vacío
                         row.innerHTML = `
-                            <td>${part.REFERENCIA}</td>
-                            <td>${part.DESCRIPCIÓN}</td>
-                            <td>${part.MÁQUINA}</td>
-                            <td>${part.GRUPO}</td>
-                            <td>${part.COMENTARIO}</td>
-                            <td>${part.CANTIDAD}</td>
+                            <td>${part.REFERENCIA || '-'}</td>
+                            <td>${part['DESCRIPCIÓN'] || '-'}</td>
+                            <td>${part['MÁQUINA'] || '-'}</td>
+                            <td>${part.GRUPO || '-'}</td>
+                            <td>${part.COMENTARIO || '-'}</td>
+                            <td>${part.CANTIDAD || '-'}</td>
                         `;
                         tableBody.appendChild(row);
                     });
