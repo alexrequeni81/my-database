@@ -1,11 +1,12 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const path = require('path'); // Asegúrate de importar 'path'
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Conectar a MongoDB usando la base de datos "spareparts"
+// Conectar a MongoDB
 mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -14,19 +15,10 @@ mongoose.connect(process.env.MONGODB_URI, {
 .then(() => console.log('Conectado a MongoDB en la base de datos "spareparts"'))
 .catch((err) => console.error('Error al conectar a MongoDB:', err));
 
-// Definir un esquema y modelo para la colección "databasev1"
-const partSchema = new mongoose.Schema({
-    REFERENCIA: String,
-    DESCRIPCIÓN: String,
-    MÁQUINA: String,
-    GRUPO: String,
-    COMENTARIO: String,
-    CANTIDAD: Number
-});
+// Configurar la carpeta de archivos estáticos
+app.use(express.static(path.join(__dirname, 'frontend')));
 
-const Part = mongoose.model('Part', partSchema, 'databasev1');
-
-// Ruta para obtener todos los documentos en la colección "databasev1"
+// Ruta para obtener todos los repuestos (API)
 app.get('/api/parts', async (req, res) => {
     try {
         const parts = await Part.find();
@@ -36,7 +28,13 @@ app.get('/api/parts', async (req, res) => {
     }
 });
 
+// Ruta para servir el archivo 'index.html' en la ruta raíz
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
+});
+
 // Iniciar el servidor
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
+
