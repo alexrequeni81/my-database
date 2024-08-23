@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const path = require('path'); // Asegúrate de importar 'path'
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,9 +21,12 @@ app.use(express.static(path.join(__dirname, 'frontend')));
 // Ruta para obtener todos los repuestos (API)
 app.get('/api/parts', async (req, res) => {
     try {
+        console.log('Solicitando datos desde la API /api/parts');
         const parts = await Part.find();
+        console.log('Datos obtenidos:', parts);
         res.json(parts);
     } catch (err) {
+        console.error('Error al obtener los repuestos:', err);
         res.status(500).send('Error al obtener los repuestos');
     }
 });
@@ -37,4 +40,3 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
-
