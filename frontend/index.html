@@ -21,10 +21,15 @@
         th {
             background-color: #f4f4f4;
         }
+        #error {
+            color: red;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <h1>Lista de Repuestos</h1>
+    <div id="error"></div>
     <table id="partsTable">
         <thead>
             <tr>
@@ -44,26 +49,36 @@
     <script>
         // Fetch para obtener los repuestos desde el backend
         fetch('/api/parts')
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta de la API: ' + response.statusText);
+                }
+                return response.json();
+            })
             .then(data => {
                 const tableBody = document.querySelector('#partsTable tbody');
                 tableBody.innerHTML = '';
 
-                data.forEach(part => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${part.REFERENCIA}</td>
-                        <td>${part.DESCRIPCIÓN}</td>
-                        <td>${part.MÁQUINA}</td>
-                        <td>${part.GRUPO}</td>
-                        <td>${part.COMENTARIO}</td>
-                        <td>${part.CANTIDAD}</td>
-                    `;
-                    tableBody.appendChild(row);
-                });
+                if (data.length === 0) {
+                    document.getElementById('error').innerText = 'No se encontraron repuestos en la base de datos.';
+                } else {
+                    data.forEach(part => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${part.REFERENCIA}</td>
+                            <td>${part.DESCRIPCIÓN}</td>
+                            <td>${part.MÁQUINA}</td>
+                            <td>${part.GRUPO}</td>
+                            <td>${part.COMENTARIO}</td>
+                            <td>${part.CANTIDAD}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                }
             })
             .catch(error => {
                 console.error('Error al cargar los repuestos:', error);
+                document.getElementById('error').innerText = 'Error al cargar los repuestos: ' + error.message;
             });
     </script>
 </body>
