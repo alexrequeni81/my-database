@@ -3,10 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conexión Exitosa a MongoDB</title>
+    <title>Repuestos desde MongoDB</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
 </head>
 <body>
-    <h1>¡Hola, Mundo!</h1>
-    <p>Este es un front-end simple conectado a un backend con MongoDB.</p>
+    <h1>Lista de Repuestos</h1>
+    <table id="partsTable">
+        <thead>
+            <tr>
+                <th>REFERENCIA</th>
+                <th>DESCRIPCIÓN</th>
+                <th>MÁQUINA</th>
+                <th>GRUPO</th>
+                <th>COMENTARIO</th>
+                <th>CANTIDAD</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Los datos se insertarán aquí -->
+        </tbody>
+    </table>
+
+    <script>
+        // Fetch para obtener los repuestos desde el backend
+        fetch('/api/parts')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.querySelector('#partsTable tbody');
+                tableBody.innerHTML = '';
+
+                data.forEach(part => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${part.REFERENCIA}</td>
+                        <td>${part.DESCRIPCIÓN}</td>
+                        <td>${part.MÁQUINA}</td>
+                        <td>${part.GRUPO}</td>
+                        <td>${part.COMENTARIO}</td>
+                        <td>${part.CANTIDAD}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error al cargar los repuestos:', error);
+            });
+    </script>
 </body>
 </html>
