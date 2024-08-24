@@ -25,19 +25,10 @@
             color: red;
             font-weight: bold;
         }
-        #loadingIndicator {
-            display: none;
-            color: blue;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
     </style>
 </head>
 <body>
     <h1>Lista de Repuestos</h1>
-
-    <!-- Indicador de carga -->
-    <div id="loadingIndicator">🔄 Actualización en proceso...</div>
 
     <!-- Campo de búsqueda -->
     <input type="text" id="searchInput" placeholder="Buscar repuestos..." onkeyup="buscarRepuestos()">
@@ -71,16 +62,7 @@
         </tbody>
     </table>
 
-    <!-- Integración de Socket.IO -->
-    <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io();
-
-        socket.on('dataUpdated', () => {
-            console.log('Datos actualizados, recargando...');
-            location.reload(); // Recargar la página o actualizar la tabla
-        });
-
         // Función para filtrar los resultados
         function buscarRepuestos() {
             const input = document.getElementById('searchInput');
@@ -104,19 +86,46 @@
             }
         }
 
-        // Mostrar/Ocultar indicador de carga
-        function showLoadingIndicator() {
-            document.getElementById('loadingIndicator').style.display = 'block';
-        }
+        // Fetch para obtener los repuestos desde el backend
+        fetch('/api/parts')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta de la API: ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const tableBody = document.querySelector('#partsTable tbody');
+                tableBody.innerHTML = '';
 
-        function hideLoadingIndicator() {
-            document.getElementById('loadingIndicator').style.display = 'none';
-        }
+                if (data.length === 0) {
+                    document.getElementById('error').innerText = 'No se encontraron repuestos en la base de datos.';
+                } else {
+                    data.forEach(part => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${part.REFERENCIA}</td>
+                            <td>${part.DESCRIPCIÓN}</td>
+                            <td>${part.MÁQUINA}</td>
+                            <td>${part.GRUPO}</td>
+                            <td>${part.COMENTARIO}</td>
+                            <td>${part.CANTIDAD}</td>
+                            <td>
+                                <button onclick="editarRepuesto('${part._id}')">Editar</button>
+                                <button onclick="eliminarRepuesto('${part._id}')">Eliminar</button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error al cargar los repuestos:', error);
+                document.getElementById('error').innerText = 'Error al cargar los repuestos: ' + error.message;
+            });
 
         // Función para crear un nuevo repuesto
         function crearRepuesto() {
-            showLoadingIndicator();
-
             const newPart = {
                 REFERENCIA: document.getElementById('addReferencia').value,
                 DESCRIPCIÓN: document.getElementById('addDescripcion').value,
@@ -135,11 +144,10 @@
             })
             .then(response => response.json())
             .then(data => {
-                hideLoadingIndicator();
+                // Recargar la tabla o añadir la fila nueva
                 location.reload();
             })
             .catch(error => {
-                hideLoadingIndicator();
                 console.error('Error al crear el repuesto:', error);
             });
         }
@@ -155,8 +163,6 @@
                 CANTIDAD: prompt("Editar Cantidad:")
             };
 
-            showLoadingIndicator();
-
             fetch(`/api/parts/${id}`, {
                 method: 'PUT',
                 headers: {
@@ -166,11 +172,10 @@
             })
             .then(response => response.json())
             .then(() => {
-                hideLoadingIndicator();
+                // Recargar la tabla o actualizar la fila
                 location.reload();
             })
             .catch(error => {
-                hideLoadingIndicator();
                 console.error('Error al actualizar el repuesto:', error);
             });
         }
@@ -178,17 +183,14 @@
         // Función para eliminar un repuesto
         function eliminarRepuesto(id) {
             if (confirm('¿Estás seguro de que deseas eliminar este repuesto?')) {
-                showLoadingIndicator();
-
                 fetch(`/api/parts/${id}`, {
                     method: 'DELETE'
                 })
                 .then(() => {
-                    hideLoadingIndicator();
+                    // Eliminar la fila de la tabla
                     location.reload();
                 })
                 .catch(error => {
-                    hideLoadingIndicator();
                     console.error('Error al eliminar el repuesto:', error);
                 });
             }
