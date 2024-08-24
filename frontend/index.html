@@ -208,9 +208,10 @@
     <script>
         let currentPage = 1;
         const limit = 10;
+        let searchQuery = '';
 
-        function cargarDatos(page = 1) {
-            fetch(`/api/parts?page=${page}&limit=${limit}`)
+        function cargarDatos(page = 1, search = '') {
+            fetch(`/api/parts?page=${page}&limit=${limit}&search=${search}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Error en la respuesta de la API: ' + response.statusText);
@@ -255,7 +256,12 @@
         }
 
         function cambiarPagina(incremento) {
-            cargarDatos(currentPage + incremento);
+            cargarDatos(currentPage + incremento, searchQuery);
+        }
+
+        function buscarRepuestos() {
+            searchQuery = document.getElementById('searchInput').value;
+            cargarDatos(1, searchQuery);
         }
 
         cargarDatos();
