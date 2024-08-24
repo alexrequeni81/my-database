@@ -39,10 +39,23 @@ app.get('/api/parts', async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
+    const searchQuery = req.query.search || '';
+
+    const query = searchQuery
+        ? {
+            $or: [
+                { REFERENCIA: { $regex: searchQuery, $options: 'i' } },
+                { DESCRIPCIÓN: { $regex: searchQuery, $options: 'i' } },
+                { MÁQUINA: { $regex: searchQuery, $options: 'i' } },
+                { GRUPO: { $regex: searchQuery, $options: 'i' } },
+                { COMENTARIO: { $regex: searchQuery, $options: 'i' } }
+            ]
+        }
+        : {};
 
     try {
-        const parts = await Part.find().skip(skip).limit(limit);
-        const total = await Part.countDocuments();
+        const parts = await Part.find(query).skip(skip).limit(limit);
+        const total = await Part.countDocuments(query);
 
         res.json({
             parts,
