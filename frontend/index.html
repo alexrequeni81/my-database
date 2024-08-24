@@ -111,6 +111,21 @@
             color: white;
         }
 
+        .pagination {
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            margin: 0 5px;
+            background-color: #007bff;
+            color: white;
+        }
+
+        .pagination button[disabled] {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
         @media (max-width: 768px) {
             form input[type="text"],
             form input[type="number"] {
@@ -183,65 +198,67 @@
         </tbody>
     </table>
 
+    <!-- Controles de Paginación -->
+    <div class="pagination">
+        <button id="prevPage" onclick="cambiarPagina(-1)">Anterior</button>
+        <span id="pageInfo"></span>
+        <button id="nextPage" onclick="cambiarPagina(1)">Siguiente</button>
+    </div>
+
     <script>
-        function buscarRepuestos() {
-            const input = document.getElementById('searchInput');
-            const filter = input.value.toUpperCase();
-            const table = document.getElementById('partsTable');
-            const tr = table.getElementsByTagName('tr');
+        let currentPage = 1;
+        const limit = 10;
 
-            for (let i = 1; i < tr.length; i++) {
-                let tdArray = tr[i].getElementsByTagName('td');
-                let match = false;
-
-                for (let j = 0; j < tdArray.length; j++) {
-                    let td = tdArray[j];
-                    if (td && td.innerHTML.toUpperCase().indexOf(filter) > -1) {
-                        match = true;
-                        break;
+        function cargarDatos(page = 1) {
+            fetch(`/api/parts?page=${page}&limit=${limit}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la respuesta de la API: ' + response.statusText);
                     }
-                }
+                    return response.json();
+                })
+                .then(data => {
+                    const tableBody = document.querySelector('#partsTable tbody');
+                    tableBody.innerHTML = '';
 
-                tr[i].style.display = match ? '' : 'none';
-            }
+                    if (data.parts.length === 0) {
+                        document.getElementById('error').innerText = 'No se encontraron repuestos en la base de datos.';
+                    } else {
+                        data.parts.forEach(part => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td data-label="REFERENCIA">${part.REFERENCIA}</td>
+                                <td data-label="DESCRIPCIÓN">${part.DESCRIPCIÓN}</td>
+                                <td data-label="MÁQUINA">${part.MÁQUINA}</td>
+                                <td data-label="GRUPO">${part.GRUPO}</td>
+                                <td data-label="COMENTARIO">${part.COMENTARIO}</td>
+                                <td data-label="CANTIDAD">${part.CANTIDAD}</td>
+                                <td>
+                                    <button onclick="editarRepuesto('${part._id}')">Editar</button>
+                                    <button onclick="eliminarRepuesto('${part._id}')">Eliminar</button>
+                                </td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    }
+
+                    // Actualizar la información de la paginación
+                    document.getElementById('pageInfo').innerText = `Página ${data.page} de ${data.pages}`;
+                    document.getElementById('prevPage').disabled = data.page === 1;
+                    document.getElementById('nextPage').disabled = data.page === data.pages;
+                    currentPage = data.page;
+                })
+                .catch(error => {
+                    console.error('Error al cargar los repuestos:', error);
+                    document.getElementById('error').innerText = 'Error al cargar los repuestos: ' + error.message;
+                });
         }
 
-        fetch('/api/parts')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Error en la respuesta de la API: ' + response.statusText);
-                }
-                return response.json();
-            })
-            .then(data => {
-                const tableBody = document.querySelector('#partsTable tbody');
-                tableBody.innerHTML = '';
+        function cambiarPagina(incremento) {
+            cargarDatos(currentPage + incremento);
+        }
 
-                if (data.length === 0) {
-                    document.getElementById('error').innerText = 'No se encontraron repuestos en la base de datos.';
-                } else {
-                    data.forEach(part => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td data-label="REFERENCIA">${part.REFERENCIA}</td>
-                            <td data-label="DESCRIPCIÓN">${part.DESCRIPCIÓN}</td>
-                            <td data-label="MÁQUINA">${part.MÁQUINA}</td>
-                            <td data-label="GRUPO">${part.GRUPO}</td>
-                            <td data-label="COMENTARIO">${part.COMENTARIO}</td>
-                            <td data-label="CANTIDAD">${part.CANTIDAD}</td>
-                            <td>
-                                <button onclick="editarRepuesto('${part._id}')">Editar</button>
-                                <button onclick="eliminarRepuesto('${part._id}')">Eliminar</button>
-                            </td>
-                        `;
-                        tableBody.appendChild(row);
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error al cargar los repuestos:', error);
-                document.getElementById('error').innerText = 'Error al cargar los repuestos: ' + error.message;
-            });
+        cargarDatos();
 
         function crearRepuesto() {
             const newPart = {
