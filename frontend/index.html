@@ -47,43 +47,39 @@
     </table>
 
     <script>
-    // Fetch para obtener los repuestos desde el backend
-    fetch('/api/parts')
-        .then(response => {
-            console.log('Status:', response.status);
-            console.log('Response:', response);
-            if (!response.ok) {
-                throw new Error('Error en la respuesta de la API: ' + response.statusText + ' (Estado: ' + response.status + ')');
-            }
-            return response.json();
-        })
-        .then(data => {
-            const tableBody = document.querySelector('#partsTable tbody');
-            tableBody.innerHTML = '';
+        // Fetch para obtener los repuestos desde el backend
+        fetch('/api/parts')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta de la API: ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const tableBody = document.querySelector('#partsTable tbody');
+                tableBody.innerHTML = '';
 
-            if (data.length === 0) {
-                document.getElementById('error').innerText = 'No se encontraron repuestos en la base de datos.';
-            } else {
-                data.forEach(part => {
-                    const row = document.createElement('tr');
-
-                    // Manejo de campos vacíos, mostrando un guion si está vacío
-                    row.innerHTML = `
-                        <td>${part.REFERENCIA || '-'}</td>
-                        <td>${part['DESCRIPCIÓN'] || '-'}</td>
-                        <td>${part['MÁQUINA'] || '-'}</td>
-                        <td>${part.GRUPO || '-'}</td>
-                        <td>${part.COMENTARIO || '-'}</td>
-                        <td>${part.CANTIDAD || '-'}</td>
-                    `;
-                    tableBody.appendChild(row);
-                });
-            }
-        })
-        .catch(error => {
-            console.error('Error al cargar los repuestos:', error);
-            document.getElementById('error').innerText = 'Error al cargar los repuestos: ' + error.message;
-        });
-</script>
+                if (data.length === 0) {
+                    document.getElementById('error').innerText = 'No se encontraron repuestos en la base de datos.';
+                } else {
+                    data.forEach(part => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${part.REFERENCIA}</td>
+                            <td>${part.DESCRIPCIÓN}</td>
+                            <td>${part.MÁQUINA}</td>
+                            <td>${part.GRUPO}</td>
+                            <td>${part.COMENTARIO}</td>
+                            <td>${part.CANTIDAD}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error al cargar los repuestos:', error);
+                document.getElementById('error').innerText = 'Error al cargar los repuestos: ' + error.message;
+            });
+    </script>
 </body>
 </html>
