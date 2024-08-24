@@ -36,15 +36,25 @@ app.use(express.static(path.join(__dirname, 'frontend')));
 
 // Obtener todos los repuestos (API)
 app.get('/api/parts', async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
     try {
-        const parts = await Part.find();
-        res.json(parts);
+        const parts = await Part.find().skip(skip).limit(limit);
+        const total = await Part.countDocuments();
+
+        res.json({
+            parts,
+            total,
+            page,
+            pages: Math.ceil(total / limit)
+        });
     } catch (err) {
         console.error('Error al obtener los repuestos:', err);
         res.status(500).send('Error al obtener los repuestos');
     }
 });
-
 // Crear un nuevo repuesto
 app.post('/api/parts', async (req, res) => {
     try {
