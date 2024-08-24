@@ -50,7 +50,9 @@ const notifyClients = () => {
 // Obtener todos los repuestos (API)
 app.get('/api/parts', async (req, res) => {
     try {
+        console.log('Solicitando datos de MongoDB...');
         const parts = await Part.find();
+        console.log('Datos obtenidos:', parts);
         res.json(parts);
     } catch (err) {
         console.error('Error al obtener los repuestos:', err);
