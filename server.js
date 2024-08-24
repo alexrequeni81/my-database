@@ -7,13 +7,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 
 const app = express();
-const server = http.createServer(app);
-const io = socketIo(server);
 const PORT = process.env.PORT || 3000;
-
-server.listen(PORT, () => {
-    console.log(`Servidor corriendo en el puerto ${PORT}`);
-});
 
 // Middleware
 app.use(bodyParser.json());
@@ -102,7 +96,10 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 });
 
-// Manejar nuevas conexiones de clientes
+// Iniciar el servidor con Socket.IO solo una vez
+const server = http.createServer(app);
+const io = socketIo(server);
+
 io.on('connection', (socket) => {
     console.log('Nuevo cliente conectado');
     socket.on('disconnect', () => {
@@ -110,7 +107,6 @@ io.on('connection', (socket) => {
     });
 });
 
-// Iniciar el servidor con Socket.IO
 server.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
