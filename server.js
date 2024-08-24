@@ -3,8 +3,12 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const bodyParser = require('body-parser');
+const http = require('http');
+const socketIo = require('socket.io');
 
 const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
 const PORT = process.env.PORT || 3000;
 
 // Middleware
@@ -34,6 +38,11 @@ const Part = mongoose.model('Part', partSchema, 'databasev1');
 // Configurar la carpeta de archivos estáticos
 app.use(express.static(path.join(__dirname, 'frontend')));
 
+// Emitir cambios a todos los clientes
+const notifyClients = () => {
+    io.emit('dataUpdated');
+};
+
 // Obtener todos los repuestos (API)
 app.get('/api/parts', async (req, res) => {
     try {
@@ -50,6 +59,7 @@ app.post('/api/parts', async (req, res) => {
     try {
         const newPart = new Part(req.body);
         await newPart.save();
+        notifyClients();
         res.status(201).json(newPart);
     } catch (err) {
         console.error('Error al crear un nuevo repuesto:', err);
@@ -61,6 +71,7 @@ app.post('/api/parts', async (req, res) => {
 app.put('/api/parts/:id', async (req, res) => {
     try {
         const updatedPart = await Part.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        notifyClients();
         res.status(200).json(updatedPart);
     } catch (err) {
         console.error('Error al actualizar el repuesto:', err);
@@ -72,6 +83,7 @@ app.put('/api/parts/:id', async (req, res) => {
 app.delete('/api/parts/:id', async (req, res) => {
     try {
         await Part.findByIdAndDelete(req.params.id);
+        notifyClients();
         res.status(204).send();
     } catch (err) {
         console.error('Error al eliminar el repuesto:', err);
@@ -84,7 +96,15 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 });
 
-// Iniciar el servidor
-app.listen(PORT, () => {
+// Manejar nuevas conexiones de clientes
+io.on('connection', (socket) => {
+    console.log('Nuevo cliente conectado');
+    socket.on('disconnect', () => {
+        console.log('Cliente desconectado');
+    });
+});
+
+// Iniciar el servidor con Socket.IO
+server.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
