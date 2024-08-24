@@ -1,7 +1,7 @@
 {
   "name": "backend-mongodb",
   "version": "1.0.0",
-  "description": "Backend Node.js conectado a MongoDB",
+  "description": "Backend Node.js conectado a MongoDB con Socket.IO",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -10,6 +10,8 @@
     "axios": "^0.21.1",
     "express": "^4.17.1",
     "mongoose": "^5.10.0",
-    "dotenv": "^8.2.0"
+    "dotenv": "^8.2.0",
+    "socket.io": "^4.0.1",
+    "body-parser": "^1.19.0"
   }
 }
