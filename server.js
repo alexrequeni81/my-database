@@ -2,10 +2,13 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
-const axios = require('axios');
+const bodyParser = require('body-parser');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Middleware
+app.use(bodyParser.json());
 
 // Conectar a MongoDB
 mongoose.connect(process.env.MONGODB_URI, {
@@ -31,7 +34,7 @@ const Part = mongoose.model('Part', partSchema, 'databasev1');
 // Configurar la carpeta de archivos estáticos
 app.use(express.static(path.join(__dirname, 'frontend')));
 
-// Ruta para obtener todos los repuestos (API)
+// Obtener todos los repuestos (API)
 app.get('/api/parts', async (req, res) => {
     try {
         const parts = await Part.find();
@@ -42,32 +45,41 @@ app.get('/api/parts', async (req, res) => {
     }
 });
 
-// Ruta para manejar solicitudes a la API de MongoDB (opcional)
-app.get('/api/mongodb', async (req, res) => {
+// Crear un nuevo repuesto
+app.post('/api/parts', async (req, res) => {
     try {
-        const response = await axios.post(
-            'https://data.mongodb-api.com/app/data-lnzazvf/endpoint/data/v1/action/findOne',
-            {
-                collection: "databasev1",
-                database: "spareparts",
-                dataSource: "Cluster0",
-                projection: { _id: 1 }
-            },
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'api-key': 'CELk75STkro8lvppxIO0SfPFkWgktZ6kFI5jg8BwMnzaUojLiLJXCdxtDpE3VzSG'
-                }
-            }
-        );
-        res.json(response.data);
-    } catch (error) {
-        console.error('Error al conectar con MongoDB API:', error);
-        res.status(500).send('Error al conectar con MongoDB API');
+        const newPart = new Part(req.body);
+        await newPart.save();
+        res.status(201).json(newPart);
+    } catch (err) {
+        console.error('Error al crear un nuevo repuesto:', err);
+        res.status(500).send('Error al crear un nuevo repuesto');
     }
 });
 
-// Ruta para servir el archivo 'index.html' en la ruta raíz
+// Actualizar un repuesto existente
+app.put('/api/parts/:id', async (req, res) => {
+    try {
+        const updatedPart = await Part.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.status(200).json(updatedPart);
+    } catch (err) {
+        console.error('Error al actualizar el repuesto:', err);
+        res.status(500).send('Error al actualizar el repuesto');
+    }
+});
+
+// Eliminar un repuesto
+app.delete('/api/parts/:id', async (req, res) => {
+    try {
+        await Part.findByIdAndDelete(req.params.id);
+        res.status(204).send();
+    } catch (err) {
+        console.error('Error al eliminar el repuesto:', err);
+        res.status(500).send('Error al eliminar el repuesto');
+    }
+});
+
+// Servir el archivo 'index.html' en la ruta raíz
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 });
