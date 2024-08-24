@@ -29,6 +29,10 @@
 </head>
 <body>
     <h1>Lista de Repuestos</h1>
+
+    <!-- Campo de búsqueda -->
+    <input type="text" id="searchInput" placeholder="Buscar repuestos..." onkeyup="buscarRepuestos()">
+
     <div id="error"></div>
     <table id="partsTable">
         <thead>
@@ -47,6 +51,31 @@
     </table>
 
     <script>
+        // Función para filtrar los resultados
+        function buscarRepuestos() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toUpperCase();
+            const table = document.getElementById('partsTable');
+            const tr = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < tr.length; i++) {
+                let tdArray = tr[i].getElementsByTagName('td');
+                let match = false;
+
+                for (let j = 0; j < tdArray.length; j++) {
+                    let td = tdArray[j];
+                    if (td) {
+                        if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                            match = true;
+                            break;
+                        }
+                    }
+                }
+
+                tr[i].style.display = match ? '' : 'none';
+            }
+        }
+
         // Fetch para obtener los repuestos desde el backend
         fetch('/api/parts')
             .then(response => {
