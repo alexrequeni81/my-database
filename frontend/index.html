@@ -126,43 +126,22 @@
                 CANTIDAD: document.getElementById('addCantidad').value,
             };
 
-            fetch('/api/parts')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Error en la respuesta de la API: ' + response.statusText);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Datos recibidos en el frontend:', data); // Añade este log para verificar los datos
-                    const tableBody = document.querySelector('#partsTable tbody');
-                    tableBody.innerHTML = '';
-
-                    if (data.length === 0) {
-                        document.getElementById('error').innerText = 'No se encontraron repuestos en la base de datos.';
-                    } else {
-                        data.forEach(part => {
-                            const row = document.createElement('tr');
-                            row.innerHTML = `
-                                <td>${part.REFERENCIA}</td>
-                                <td>${part.DESCRIPCIÓN}</td>
-                                <td>${part.MÁQUINA}</td>
-                                <td>${part.GRUPO}</td>
-                                <td>${part.COMENTARIO}</td>
-                                <td>${part.CANTIDAD}</td>
-                                <td>
-                                    <button onclick="editarRepuesto('${part._id}')">Editar</button>
-                                    <button onclick="eliminarRepuesto('${part._id}')">Eliminar</button>
-                                </td>
-                            `;
-                            tableBody.appendChild(row);
-                        });
-                    }
-               })
-               .catch(error => {
-                   console.error('Error al cargar los repuestos:', error);
-                   document.getElementById('error').innerText = 'Error al cargar los repuestos: ' + error.message;
-               });
+            fetch('/api/parts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newPart)
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoadingIndicator();
+                location.reload();
+            })
+            .catch(error => {
+                hideLoadingIndicator();
+                console.error('Error al crear el repuesto:', error);
+            });
         }
 
         // Función para editar un repuesto
