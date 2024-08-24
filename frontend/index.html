@@ -33,6 +33,17 @@
     <!-- Campo de búsqueda -->
     <input type="text" id="searchInput" placeholder="Buscar repuestos..." onkeyup="buscarRepuestos()">
 
+    <!-- Formulario para añadir un nuevo repuesto -->
+    <form id="addPartForm">
+        <input type="text" id="addReferencia" placeholder="Referencia" required>
+        <input type="text" id="addDescripcion" placeholder="Descripción" required>
+        <input type="text" id="addMaquina" placeholder="Máquina" required>
+        <input type="text" id="addGrupo" placeholder="Grupo" required>
+        <input type="text" id="addComentario" placeholder="Comentario" required>
+        <input type="number" id="addCantidad" placeholder="Cantidad" required>
+        <button type="button" onclick="crearRepuesto()">Añadir Repuesto</button>
+    </form>
+
     <div id="error"></div>
     <table id="partsTable">
         <thead>
@@ -43,6 +54,7 @@
                 <th>GRUPO</th>
                 <th>COMENTARIO</th>
                 <th>CANTIDAD</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -64,11 +76,9 @@
 
                 for (let j = 0; j < tdArray.length; j++) {
                     let td = tdArray[j];
-                    if (td) {
-                        if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
-                            match = true;
-                            break;
-                        }
+                    if (td && td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                        match = true;
+                        break;
                     }
                 }
 
@@ -100,6 +110,10 @@
                             <td>${part.GRUPO}</td>
                             <td>${part.COMENTARIO}</td>
                             <td>${part.CANTIDAD}</td>
+                            <td>
+                                <button onclick="editarRepuesto('${part._id}')">Editar</button>
+                                <button onclick="eliminarRepuesto('${part._id}')">Eliminar</button>
+                            </td>
                         `;
                         tableBody.appendChild(row);
                     });
@@ -109,6 +123,78 @@
                 console.error('Error al cargar los repuestos:', error);
                 document.getElementById('error').innerText = 'Error al cargar los repuestos: ' + error.message;
             });
+
+        // Función para crear un nuevo repuesto
+        function crearRepuesto() {
+            const newPart = {
+                REFERENCIA: document.getElementById('addReferencia').value,
+                DESCRIPCIÓN: document.getElementById('addDescripcion').value,
+                MÁQUINA: document.getElementById('addMaquina').value,
+                GRUPO: document.getElementById('addGrupo').value,
+                COMENTARIO: document.getElementById('addComentario').value,
+                CANTIDAD: document.getElementById('addCantidad').value,
+            };
+
+            fetch('/api/parts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newPart)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Recargar la tabla o añadir la fila nueva
+                location.reload();
+            })
+            .catch(error => {
+                console.error('Error al crear el repuesto:', error);
+            });
+        }
+
+        // Función para editar un repuesto
+        function editarRepuesto(id) {
+            const updatedPart = {
+                REFERENCIA: prompt("Editar Referencia:"),
+                DESCRIPCIÓN: prompt("Editar Descripción:"),
+                MÁQUINA: prompt("Editar Máquina:"),
+                GRUPO: prompt("Editar Grupo:"),
+                COMENTARIO: prompt("Editar Comentario:"),
+                CANTIDAD: prompt("Editar Cantidad:")
+            };
+
+            fetch(`/api/parts/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedPart)
+            })
+            .then(response => response.json())
+            .then(() => {
+                // Recargar la tabla o actualizar la fila
+                location.reload();
+            })
+            .catch(error => {
+                console.error('Error al actualizar el repuesto:', error);
+            });
+        }
+
+        // Función para eliminar un repuesto
+        function eliminarRepuesto(id) {
+            if (confirm('¿Estás seguro de que deseas eliminar este repuesto?')) {
+                fetch(`/api/parts/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(() => {
+                    // Eliminar la fila de la tabla
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error al eliminar el repuesto:', error);
+                });
+            }
+        }
     </script>
 </body>
 </html>
