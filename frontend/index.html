@@ -33,26 +33,33 @@
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
+            justify-content: center;
             margin-bottom: 20px;
+            width: 100%;
         }
 
         form input[type="text"],
         form input[type="number"] {
-            padding: 10px;
+            padding: 8px;
             border-radius: 5px;
             border: 1px solid #ccc;
-            flex: 1 1 calc(50% - 20px);
-            max-width: 400px;
+            flex: 1;
+            max-width: 100px; /* Ajusta el ancho máximo para compactar */
+        }
+
+        form input[type="number"]#addCantidad {
+            max-width: 60px; /* Campo de cantidad más pequeño */
         }
 
         form button {
-            padding: 10px 20px;
+            padding: 8px 15px;
             border: none;
             border-radius: 5px;
             background-color: #28a745;
             color: white;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            max-width: 120px; /* Limitar ancho del botón */
         }
 
         form button:hover {
@@ -130,6 +137,7 @@
             form input[type="text"],
             form input[type="number"] {
                 flex: 1 1 100%;
+                max-width: 100%;
             }
 
             th, td {
@@ -198,7 +206,6 @@
         </tbody>
     </table>
 
-    <!-- Controles de Paginación -->
     <div class="pagination">
         <button id="prevPage" onclick="cambiarPagina(-1)">Anterior</button>
         <span id="pageInfo"></span>
@@ -243,7 +250,6 @@
                         });
                     }
 
-                    // Actualizar la información de la paginación
                     document.getElementById('pageInfo').innerText = `Página ${data.page} de ${data.pages}`;
                     document.getElementById('prevPage').disabled = data.page === 1;
                     document.getElementById('nextPage').disabled = data.page === data.pages;
