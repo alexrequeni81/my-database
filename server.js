@@ -7,7 +7,21 @@ const bodyParser = require('body-parser');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
+// Middleware para logging de las solicitudes
+app.use((req, res, next) => {
+    console.log(`Request URL: ${req.url}`);
+    next();
+});
+
+// Middleware para asegurar el tipo MIME correcto para archivos .js
+app.use((req, res, next) => {
+    if (req.url.endsWith('.js')) {
+        res.setHeader('Content-Type', 'application/javascript');
+    }
+    next();
+});
+
+// Middleware para parsear JSON en el cuerpo de las solicitudes
 app.use(bodyParser.json());
 
 // Conectar a MongoDB
@@ -68,6 +82,7 @@ app.get('/api/parts', async (req, res) => {
         res.status(500).send('Error al obtener los repuestos');
     }
 });
+
 // Crear un nuevo repuesto
 app.post('/api/parts', async (req, res) => {
     try {
