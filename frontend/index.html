@@ -22,6 +22,7 @@
     </form>
 
     <div id="error"></div>
+    <div class="table-responsive">
     <table id="partsTable">
         <thead>
             <tr>
@@ -35,9 +36,14 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Los datos se insertarán aquí -->
+            <tr class="collapsible-content">
+                <td colspan="6">
+                    <!-- Los datos se insertarán aquí -->
+                </td>
+            </tr>
         </tbody>
     </table>
+    </div>
 
     <div class="pagination">
         <button id="prevPage" onclick="cambiarPagina(-1)">Anterior</button>
