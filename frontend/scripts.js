@@ -3,7 +3,7 @@ const limit = 10;
 let searchQuery = '';
 
 function cargarDatos(page = 1, search = '') {
-    fetch(`/api/parts?page=${page}&limit=${limit}&search=${search}`)
+    fetch(/api/parts?page=${page}&limit=${limit}&search=${search})
         .then(response => {
             if (!response.ok) {
                 throw new Error('Error en la respuesta de la API: ' + response.statusText);
@@ -19,7 +19,7 @@ function cargarDatos(page = 1, search = '') {
             } else {
                 data.parts.forEach(part => {
                     const row = document.createElement('tr');
-                    row.innerHTML = `
+                    row.innerHTML = 
                         <td data-label="REFERENCIA">${part.REFERENCIA}</td>
                         <td data-label="DESCRIPCIÓN">${part.DESCRIPCIÓN}</td>
                         <td data-label="MÁQUINA">${part.MÁQUINA}</td>
@@ -30,12 +30,12 @@ function cargarDatos(page = 1, search = '') {
                             <button onclick="editarRepuesto('${part._id}')">Editar</button>
                             <button onclick="eliminarRepuesto('${part._id}')">Eliminar</button>
                         </td>
-                    `;
+                    ;
                     tableBody.appendChild(row);
                 });
             }
 
-            document.getElementById('pageInfo').innerText = `Página ${data.page} de ${data.pages}`;
+            document.getElementById('pageInfo').innerText = Página ${data.page} de ${data.pages};
             document.getElementById('prevPage').disabled = data.page === 1;
             document.getElementById('nextPage').disabled = data.page === data.pages;
             currentPage = data.page;
@@ -95,7 +95,7 @@ function editarRepuesto(id) {
     const comentario = prompt('Ingrese nuevo comentario:');
     const cantidad = prompt('Ingrese nueva cantidad:');
 
-    fetch(`/api/parts/${id}`, {
+    fetch(/api/parts/${id}, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -116,7 +116,7 @@ function editarRepuesto(id) {
 
 function eliminarRepuesto(id) {
     if (confirm('¿Está seguro de que desea eliminar este repuesto?')) {
-        fetch(`/api/parts/${id}`, {
+        fetch(/api/parts/${id}, {
             method: 'DELETE'
         })
         .then(response => {
@@ -131,17 +131,6 @@ function eliminarRepuesto(id) {
         });
     }
 }
-
-// JavaScript para alternar la visibilidad de las filas de contenido
-document.querySelectorAll('.table-responsive tr').forEach(row => {
-    row.addEventListener('click', function () {
-        const nextRow = this.nextElementSibling;
-        if (nextRow && nextRow.classList.contains('collapsible-content')) {
-            nextRow.classList.toggle('show-content');
-        }
-    });
-});
-
 
 document.addEventListener('DOMContentLoaded', () => {
     cargarDatos();
