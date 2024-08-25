@@ -150,7 +150,9 @@ button:nth-child(2) {
 
     td {
         text-align: right;
-        padding-left: 50%;
+        padding: 10px 5px;
+        white-space: normal; /* Permite que el texto se ajuste en varias líneas si es necesario */
+        word-wrap: break-word; /* Ajusta el texto que es muy largo */
         position: relative;
     }
 
@@ -162,5 +164,8 @@ button:nth-child(2) {
         padding-right: 10px;
         text-align: left;
         font-weight: bold;
+        white-space: nowrap; /* Asegúrate de que la etiqueta no se divida en dos líneas */
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
