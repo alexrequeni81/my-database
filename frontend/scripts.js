@@ -132,6 +132,17 @@ function eliminarRepuesto(id) {
     }
 }
 
+// JavaScript para alternar la visibilidad de las filas de contenido
+document.querySelectorAll('.table-responsive tr').forEach(row => {
+    row.addEventListener('click', function () {
+        const nextRow = this.nextElementSibling;
+        if (nextRow && nextRow.classList.contains('collapsible-content')) {
+            nextRow.classList.toggle('show-content');
+        }
+    });
+});
+
+
 document.addEventListener('DOMContentLoaded', () => {
     cargarDatos();
 });
