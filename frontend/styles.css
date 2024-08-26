@@ -174,7 +174,7 @@ button:nth-child(2) {
     width: 100%;
     text-align: left;
     transition: max-height 0.3s ease; /* Add transition for smooth animation */
-    max-height: 40px; /* Initial height for the first line */
+    max-height: none; /* Initial height for the first line */
   }
 
   /* Add labels to table data cells */
