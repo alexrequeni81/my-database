@@ -131,7 +131,7 @@ button:nth-child(2) {
   cursor: not-allowed;
 }
 
-/* Mobile View with Bootstrap */
+/* Mobile View with Bootstrap and Stacked Table */
 @media (max-width: 768px) {
   /* Use Bootstrap grid system for better mobile layout */
   .container {
@@ -150,7 +150,7 @@ button:nth-child(2) {
     max-width: 100%;
   }
 
-  /* Adjust table layout for mobile */
+  /* Stacked Table for Mobile */
   table {
     table-layout: fixed;
     width: 100%;
@@ -159,6 +159,32 @@ button:nth-child(2) {
   th, td {
     padding: 8px 10px;
     text-align: left;
+  }
+
+  /* Hide table headers on mobile */
+  thead {
+    display: none;
+  }
+
+  /* Style table rows */
+  tr {
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  /* Style table data cells */
+  td {
+    display: block;
+    width: 100%;
+    text-align: left;
+  }
+
+  /* Add labels to table data cells */
+  td:before {
+    content: attr(data-label) ": ";
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
   }
 
   /* Adjust pagination for mobile */
