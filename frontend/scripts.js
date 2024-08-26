@@ -27,8 +27,8 @@ function cargarDatos(page = 1, search = '') {
                         <td data-label="COMENTARIO">${part.COMENTARIO}</td>
                         <td data-label="CANTIDAD">${part.CANTIDAD}</td>
                         <td>
-                            <button onclick="editarRepuesto('${part._id}')">Editar</button>
-                            <button onclick="eliminarRepuesto('${part._id}')">Eliminar</button>
+                            <button onclick="editarRepuesto('${part._id}')" class="btn btn-warning">Editar</button>
+                            <button onclick="eliminarRepuesto('${part._id}')" class="btn btn-danger">Eliminar</button>
                         </td>
                     `;
                     tableBody.appendChild(row);
