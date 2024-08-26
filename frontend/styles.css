@@ -121,7 +121,7 @@ button:nth-child(2) {
 }
 
 .pagination button {
-  margin: 0 5px;
+  margin: 250 5px;
   background-color: #007bff;
   color: white;
 }
