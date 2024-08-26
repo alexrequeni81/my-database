@@ -131,7 +131,7 @@ button:nth-child(2) {
   cursor: not-allowed;
 }
 
-/* Mobile View with Bootstrap and Stacked Table */
+/* Mobile View with Collapsible Rows */
 @media (max-width: 768px) {
   /* Use Bootstrap grid system for better mobile layout */
   .container {
@@ -150,15 +150,10 @@ button:nth-child(2) {
     max-width: 100%;
   }
 
-  /* Stacked Table for Mobile */
+  /* Collapsible Table Rows */
   table {
     table-layout: fixed;
     width: 100%;
-  }
-
-  th, td {
-    padding: 8px 10px;
-    text-align: left;
   }
 
   /* Hide table headers on mobile */
@@ -170,6 +165,7 @@ button:nth-child(2) {
   tr {
     display: block;
     margin-bottom: 10px;
+    overflow: hidden;
   }
 
   /* Style table data cells */
@@ -177,6 +173,8 @@ button:nth-child(2) {
     display: block;
     width: 100%;
     text-align: left;
+    transition: max-height 0.3s ease; /* Add transition for smooth animation */
+    max-height: 40px; /* Initial height for the first line */
   }
 
   /* Add labels to table data cells */
@@ -185,6 +183,23 @@ button:nth-child(2) {
     font-weight: bold;
     display: block;
     margin-bottom: 5px;
+  }
+
+  /* Expand/Collapse Row */
+  tr.expanded td {
+    max-height: none; /* Expand to full height */
+  }
+
+  /* Button to expand/collapse row */
+  .expand-collapse-button {
+    display: inline-block;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: transform 0.3s ease; /* Add transition for smooth animation */
+  }
+
+  .expand-collapse-button:hover {
+    transform: rotate(90deg); /* Rotate arrow on hover */
   }
 
   /* Adjust pagination for mobile */
