@@ -125,38 +125,3 @@ button:nth-child(2) {
     background-color: #ccc;
     cursor: not-allowed;
 }
-
-@media (max-width: 768px) {
-    form input[type="text"],
-    form input[type="number"] {
-        flex: 1 1 100%;
-        max-width: 100%;
-    }
-
-    th, td {
-        padding: 8px 10px;
-    }
-}
-
-@media (max-width: 480px) {
-    td {
-        padding: 10px 5px;
-        white-space: normal; /* Permite que el texto se ajuste en varias líneas si es necesario */
-        word-wrap: break-word; /* Ajusta el texto que es muy largo */
-        overflow-wrap: break-word;
-    }
-
-    td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 10px;
-        width: calc(50% - 20px);
-        padding-right: 10px;
-        text-align: left;
-        font-weight: bold;
-        white-space: nowrap; /* Asegúrate de que la etiqueta no se divida en dos líneas */
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-}
-
