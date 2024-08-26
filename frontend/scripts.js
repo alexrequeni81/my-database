@@ -1,137 +1,128 @@
-let currentPage = 1;
-const limit = 10;
-let searchQuery = '';
+require('dotenv').config();
+const express = require('express');
+const mongoose = require('mongoose');
+const path = require('path');
+const bodyParser = require('body-parser');
 
-function cargarDatos(page = 1, search = '') {
-    fetch(/api/parts?page=${page}&limit=${limit}&search=${search})
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error en la respuesta de la API: ' + response.statusText);
-            }
-            return response.json();
-        })
-        .then(data => {
-            const tableBody = document.querySelector('#partsTable tbody');
-            tableBody.innerHTML = '';
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-            if (data.parts.length === 0) {
-                document.getElementById('error').innerText = 'No se encontraron repuestos en la base de datos.';
-            } else {
-                data.parts.forEach(part => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = 
-                        <td data-label="REFERENCIA">${part.REFERENCIA}</td>
-                        <td data-label="DESCRIPCIÓN">${part.DESCRIPCIÓN}</td>
-                        <td data-label="MÁQUINA">${part.MÁQUINA}</td>
-                        <td data-label="GRUPO">${part.GRUPO}</td>
-                        <td data-label="COMENTARIO">${part.COMENTARIO}</td>
-                        <td data-label="CANTIDAD">${part.CANTIDAD}</td>
-                        <td>
-                            <button onclick="editarRepuesto('${part._id}')">Editar</button>
-                            <button onclick="eliminarRepuesto('${part._id}')">Eliminar</button>
-                        </td>
-                    ;
-                    tableBody.appendChild(row);
-                });
-            }
+// Middleware para logging de las solicitudes
+app.use((req, res, next) => {
+    console.log(`Request URL: ${req.url}`);
+    next();
+});
 
-            document.getElementById('pageInfo').innerText = Página ${data.page} de ${data.pages};
-            document.getElementById('prevPage').disabled = data.page === 1;
-            document.getElementById('nextPage').disabled = data.page === data.pages;
-            currentPage = data.page;
-        })
-        .catch(error => {
-            console.error('Error al cargar los repuestos:', error);
-            document.getElementById('error').innerText = 'Error al cargar los repuestos: ' + error.message;
-        });
-}
-
-function cambiarPagina(direccion) {
-    const nuevaPagina = currentPage + direccion;
-    cargarDatos(nuevaPagina, searchQuery);
-}
-
-function buscarRepuestos() {
-    searchQuery = document.getElementById('searchInput').value;
-    cargarDatos(1, searchQuery);
-}
-
-function crearRepuesto() {
-    const referencia = document.getElementById('addReferencia').value;
-    const descripcion = document.getElementById('addDescripcion').value;
-    const maquina = document.getElementById('addMaquina').value;
-    const grupo = document.getElementById('addGrupo').value;
-    const comentario = document.getElementById('addComentario').value;
-    const cantidad = parseInt(document.getElementById('addCantidad').value, 10);
-
-    fetch('/api/parts', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ referencia, descripcion, maquina, grupo, comentario, cantidad })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Error en la creación del repuesto');
-        }
-        return response.json();
-    })
-    .then(() => {
-        cargarDatos(currentPage);
-        document.getElementById('addPartForm').reset();
-    })
-    .catch(error => {
-        console.error('Error al crear el repuesto:', error);
-        document.getElementById('error').innerText = 'Error al crear el repuesto: ' + error.message;
-    });
-}
-
-function editarRepuesto(id) {
-    const referencia = prompt('Ingrese nueva referencia:');
-    const descripcion = prompt('Ingrese nueva descripción:');
-    const maquina = prompt('Ingrese nueva máquina:');
-    const grupo = prompt('Ingrese nuevo grupo:');
-    const comentario = prompt('Ingrese nuevo comentario:');
-    const cantidad = prompt('Ingrese nueva cantidad:');
-
-    fetch(/api/parts/${id}, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ referencia, descripcion, maquina, grupo, comentario, cantidad: parseInt(cantidad, 10) })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Error al actualizar el repuesto');
-        }
-        cargarDatos(currentPage);
-    })
-    .catch(error => {
-        console.error('Error al actualizar el repuesto:', error);
-        document.getElementById('error').innerText = 'Error al actualizar el repuesto: ' + error.message;
-    });
-}
-
-function eliminarRepuesto(id) {
-    if (confirm('¿Está seguro de que desea eliminar este repuesto?')) {
-        fetch(/api/parts/${id}, {
-            method: 'DELETE'
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error al eliminar el repuesto');
-            }
-            cargarDatos(currentPage);
-        })
-        .catch(error => {
-            console.error('Error al eliminar el repuesto:', error);
-            document.getElementById('error').innerText = 'Error al eliminar el repuesto: ' + error.message;
-        });
+// Middleware para asegurar el tipo MIME correcto para archivos .js
+app.use((req, res, next) => {
+    if (req.url.endsWith('.js')) {
+        res.setHeader('Content-Type', 'application/javascript');
     }
-}
+    next();
+});
 
-document.addEventListener('DOMContentLoaded', () => {
-    cargarDatos();
+// Middleware para parsear JSON en el cuerpo de las solicitudes
+app.use(bodyParser.json());
+
+// Conectar a MongoDB
+mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    dbName: 'spareparts'
+})
+.then(() => console.log('Conectado a MongoDB en la base de datos "spareparts"'))
+.catch((err) => console.error('Error al conectar a MongoDB:', err));
+
+// Definir el esquema y modelo para "Part"
+const partSchema = new mongoose.Schema({
+    REFERENCIA: String,
+    DESCRIPCIÓN: String,
+    MÁQUINA: String,
+    GRUPO: String,
+    COMENTARIO: String,
+    CANTIDAD: Number
+});
+
+const Part = mongoose.model('Part', partSchema, 'databasev1');
+
+// Configurar la carpeta de archivos estáticos
+app.use(express.static(path.join(__dirname, 'frontend')));
+
+// Obtener todos los repuestos (API)
+app.get('/api/parts', async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const searchQuery = req.query.search || '';
+
+    const query = searchQuery
+        ? {
+            $or: [
+                { REFERENCIA: { $regex: searchQuery, $options: 'i' } },
+                { DESCRIPCIÓN: { $regex: searchQuery, $options: 'i' } },
+                { MÁQUINA: { $regex: searchQuery, $options: 'i' } },
+                { GRUPO: { $regex: searchQuery, $options: 'i' } },
+                { COMENTARIO: { $regex: searchQuery, $options: 'i' } }
+            ]
+        }
+        : {};
+
+    try {
+        const parts = await Part.find(query).skip(skip).limit(limit);
+        const total = await Part.countDocuments(query);
+
+        res.json({
+            parts,
+            total,
+            page,
+            pages: Math.ceil(total / limit)
+        });
+    } catch (err) {
+        console.error('Error al obtener los repuestos:', err);
+        res.status(500).send('Error al obtener los repuestos');
+    }
+});
+
+// Crear un nuevo repuesto
+app.post('/api/parts', async (req, res) => {
+    try {
+        const newPart = new Part(req.body);
+        await newPart.save();
+        res.status(201).json(newPart);
+    } catch (err) {
+        console.error('Error al crear un nuevo repuesto:', err);
+        res.status(500).send('Error al crear un nuevo repuesto');
+    }
+});
+
+// Actualizar un repuesto existente
+app.put('/api/parts/:id', async (req, res) => {
+    try {
+        const updatedPart = await Part.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.status(200).json(updatedPart);
+    } catch (err) {
+        console.error('Error al actualizar el repuesto:', err);
+        res.status(500).send('Error al actualizar el repuesto');
+    }
+});
+
+// Eliminar un repuesto
+app.delete('/api/parts/:id', async (req, res) => {
+    try {
+        await Part.findByIdAndDelete(req.params.id);
+        res.status(204).send();
+    } catch (err) {
+        console.error('Error al eliminar el repuesto:', err);
+        res.status(500).send('Error al eliminar el repuesto');
+    }
+});
+
+// Servir el archivo 'index.html' en la ruta raíz
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
+});
+
+// Iniciar el servidor
+app.listen(PORT, () => {
+    console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
