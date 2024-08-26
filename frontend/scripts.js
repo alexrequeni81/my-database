@@ -30,6 +30,9 @@ function cargarDatos(page = 1, search = '') {
                             <button onclick="editarRepuesto('${part._id}')" class="btn btn-warning">Editar</button>
                             <button onclick="eliminarRepuesto('${part._id}')" class="btn btn-danger">Eliminar</button>
                         </td>
+                        <td class="expand-collapse-button" onclick="toggleRow(this)">
+                            <i class="fas fa-chevron-down"></i> 
+                        </td>
                     `;
                     tableBody.appendChild(row);
                 });
@@ -130,6 +133,11 @@ function eliminarRepuesto(id) {
             document.getElementById('error').innerText = 'Error al eliminar el repuesto: ' + error.message;
         });
     }
+}
+
+function toggleRow(button) {
+  const row = button.closest('tr');
+  row.classList.toggle('expanded');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
