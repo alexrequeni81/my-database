@@ -4,45 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Repuestos desde MongoDB</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Lista de Repuestos</h1>
+    <div class="container">
+        <h1>Lista de Repuestos</h1>
 
-    <input type="text" id="searchInput" placeholder="Buscar repuestos..." onkeyup="buscarRepuestos()">
+        <input type="text" id="searchInput" class="form-control" placeholder="Buscar repuestos..." onkeyup="buscarRepuestos()">
 
-    <form id="addPartForm">
-        <input type="text" id="addReferencia" placeholder="Referencia" required>
-        <input type="text" id="addDescripcion" placeholder="Descripción" required>
-        <input type="text" id="addMaquina" placeholder="Máquina" required>
-        <input type="text" id="addGrupo" placeholder="Grupo" required>
-        <input type="text" id="addComentario" placeholder="Comentario" required>
-        <input type="number" id="addCantidad" placeholder="Cantidad" required>
-        <button type="button" onclick="crearRepuesto()">Añadir Repuesto</button>
-    </form>
+        <form id="addPartForm">
+            <div class="form-group">
+                <input type="text" id="addReferencia" class="form-control" placeholder="Referencia" required>
+            </div>
+            <div class="form-group">
+                <input type="text" id="addDescripcion" class="form-control" placeholder="Descripción" required>
+            </div>
+            <div class="form-group">
+                <input type="text" id="addMaquina" class="form-control" placeholder="Máquina" required>
+            </div>
+            <div class="form-group">
+                <input type="text" id="addGrupo" class="form-control" placeholder="Grupo" required>
+            </div>
+            <div class="form-group">
+                <input type="text" id="addComentario" class="form-control" placeholder="Comentario" required>
+            </div>
+            <div class="form-group">
+                <input type="number" id="addCantidad" class="form-control" placeholder="Cantidad" required>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="crearRepuesto()">Añadir Repuesto</button>
+        </form>
 
-    <div id="error"></div>
-    <table id="partsTable">
-        <thead>
-            <tr>
-                <th>REFERENCIA</th>
-                <th>DESCRIPCIÓN</th>
-                <th>MÁQUINA</th>
-                <th>GRUPO</th>
-                <th>COMENTARIO</th>
-                <th>CANTIDAD</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Los datos se insertarán aquí -->
-        </tbody>
-    </table>
+        <div id="error" class="alert alert-danger" role="alert"></div>
+        <table id="partsTable" class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>REFERENCIA</th>
+                    <th>DESCRIPCIÓN</th>
+                    <th>MÁQUINA</th>
+                    <th>GRUPO</th>
+                    <th>COMENTARIO</th>
+                    <th>CANTIDAD</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Los datos se insertarán aquí -->
+            </tbody>
+        </table>
 
-    <div class="pagination">
-        <button id="prevPage" onclick="cambiarPagina(-1)">Anterior</button>
-        <span id="pageInfo"></span>
-        <button id="nextPage" onclick="cambiarPagina(1)">Siguiente</button>
+        <div class="pagination">
+            <button id="prevPage" class="btn btn-secondary" onclick="cambiarPagina(-1)">Anterior</button>
+            <span id="pageInfo"></span>
+            <button id="nextPage" class="btn btn-secondary" onclick="cambiarPagina(1)">Siguiente</button>
+        </div>
     </div>
 
     <script src="scripts.js"></script>
