@@ -208,21 +208,21 @@ button:nth-child(2) {
   }
 
   /* Expand/Collapse Row */
-  tr.expanded td {
-    max-height: none; /* Expand to full height */
-  }
+  /tr.expanded td {
+    /max-height: none; /* Expand to full height */
+  /}
 
   /* Button to expand/collapse row */
-  .expand-collapse-button {
-    display: inline-block;
-    margin-left: 10px;
-    cursor: pointer;
-    transition: transform 0.3s ease; /* Add transition for smooth animation */
-  }
+  /.expand-collapse-button {
+    /display: inline-block;
+    /margin-left: 10px;
+    /cursor: pointer;
+    /transition: transform 0.3s ease; /* Add transition for smooth animation */
+  /}
 
-  .expand-collapse-button:hover {
-    transform: rotate(90deg); /* Rotate arrow on hover */
-  }
+  /.expand-collapse-button:hover {
+    /transform: rotate(90deg); /* Rotate arrow on hover */
+  /}
 
   /* Adjust pagination for mobile */
   .pagination {
