@@ -11,16 +11,6 @@
         <h1>SAT - REPUESTOS</h1>
         <input type="text" id="searchInput" placeholder="Buscar repuestos..." onkeyup="buscarRepuestos()">
         <form id="addPartForm">
-            <input type="text" id="addReferencia" placeholder="Referencia" required>
-            <input type="text" id="addDescripcion" placeholder="Descripción" required>
-            <input type="text" id="addMaquina" placeholder="Máquina" required>
-            <input type="text" id="addGrupo" placeholder="Grupo" required>
-            <input type="text" id="addComentario" placeholder="Comentario" required>
-            <input type="number" id="addCantidad" placeholder="Cantidad" required>
-            <button type="button" onclick="crearRepuesto()">Añadir</button>
-        </form>
-        <div id="error" class="alert" style="display: none;"></div>
-        <div id="success" class="alert" style="display: none;"></div>
         <table id="partsTable">
             <thead>
                 <tr>
@@ -37,6 +27,16 @@
                 <!-- Los datos se insertarán aquí -->
             </tbody>
         </table>
+            <input type="text" id="addReferencia" placeholder="Referencia" required>
+            <input type="text" id="addDescripcion" placeholder="Descripción" required>
+            <input type="text" id="addMaquina" placeholder="Máquina" required>
+            <input type="text" id="addGrupo" placeholder="Grupo" required>
+            <input type="text" id="addComentario" placeholder="Comentario" required>
+            <input type="number" id="addCantidad" placeholder="Cantidad" required>
+            <button type="button" onclick="crearRepuesto()">Añadir</button>
+        </form>
+        <div id="error" class="alert" style="display: none;"></div>
+        <div id="success" class="alert" style="display: none;"></div>
     </div>
     <script src="scripts.js"></script>
 </body>
