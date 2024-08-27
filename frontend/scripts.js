@@ -55,17 +55,23 @@ function cambiarPagina(direccion) {
 }
 
 function buscarRepuestos() {
-    searchQuery = document.getElementById('searchInput').value;
+    searchQuery = document.getElementById('searchInput').value.trim();
     cargarDatos(1, searchQuery);
 }
 
 function crearRepuesto() {
-    const referencia = document.getElementById('addReferencia').value;
-    const descripcion = document.getElementById('addDescripcion').value;
-    const maquina = document.getElementById('addMaquina').value;
-    const grupo = document.getElementById('addGrupo').value;
-    const comentario = document.getElementById('addComentario').value;
-    const cantidad = parseInt(document.getElementById('addCantidad').value, 10);
+    const referencia = document.getElementById('addReferencia').value.trim();
+    const descripcion = document.getElementById('addDescripcion').value.trim();
+    const maquina = document.getElementById('addMaquina').value.trim();
+    const grupo = document.getElementById('addGrupo').value.trim();
+    const comentario = document.getElementById('addComentario').value.trim();
+    const cantidad = parseInt(document.getElementById('addCantidad').value.trim(), 10);
+
+    // Validación antes de enviar
+    if (!referencia || !descripcion || !maquina || !grupo || !comentario || isNaN(cantidad)) {
+        mostrarError('Todos los campos son obligatorios');
+        return;
+    }
 
     fetch('/api/parts', {
         method: 'POST',
@@ -97,21 +103,29 @@ function editarRepuesto(id) {
     const maquina = prompt('Ingrese nueva máquina:');
     const grupo = prompt('Ingrese nuevo grupo:');
     const comentario = prompt('Ingrese nuevo comentario:');
-    const cantidad = prompt('Ingrese nueva cantidad:');
+    const cantidad = parseInt(prompt('Ingrese nueva cantidad:'), 10);
+
+    if (!referencia || !descripcion || !maquina || !grupo || !comentario || isNaN(cantidad)) {
+        mostrarError('Todos los campos son obligatorios');
+        return;
+    }
 
     fetch(`/api/parts/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ referencia, descripcion, maquina, grupo, comentario, cantidad: parseInt(cantidad, 10) })
+        body: JSON.stringify({ referencia, descripcion, maquina, grupo, comentario, cantidad })
     })
     .then(response => {
         if (!response.ok) {
             throw new Error('Error al actualizar el repuesto');
         }
-        cargarDatos(currentPage);
+        return response.json();
+    })
+    .then(() => {
         mostrarExito('Repuesto actualizado correctamente');
+        cargarDatos(currentPage);
     })
     .catch(error => {
         console.error('Error al actualizar el repuesto:', error);
