@@ -86,12 +86,35 @@ app.get('/api/parts', async (req, res) => {
 // Crear un nuevo repuesto
 app.post('/api/parts', async (req, res) => {
     try {
-        const newPart = new Part(req.body);
+        // Asegúrate de que los datos recibidos son correctos
+        const { referencia, descripcion, maquina, grupo, comentario, cantidad } = req.body;
+
+        // Validar que todos los campos están presentes
+        if (!referencia || !descripcion || !maquina || !grupo || !comentario || !cantidad) {
+            return res.status(400).json({ error: 'Todos los campos son requeridos' });
+        }
+
+        // Crear un nuevo documento con los datos recibidos
+        const newPart = new Part({
+            REFERENCIA: referencia,
+            DESCRIPCIÓN: descripcion,
+            MÁQUINA: maquina,
+            GRUPO: grupo,
+            COMENTARIO: comentario,
+            CANTIDAD: cantidad
+        });
+
+        // Guardar en la base de datos
         await newPart.save();
-        res.status(201).json(newPart);
+
+        // Responder con un éxito si todo salió bien
+        res.status(201).json({
+            message: 'Repuesto creado con éxito',
+            part: newPart
+        });
     } catch (err) {
         console.error('Error al crear un nuevo repuesto:', err);
-        res.status(500).send('Error al crear un nuevo repuesto');
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
 
@@ -99,10 +122,13 @@ app.post('/api/parts', async (req, res) => {
 app.put('/api/parts/:id', async (req, res) => {
     try {
         const updatedPart = await Part.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedPart) {
+            return res.status(404).json({ error: 'Repuesto no encontrado' });
+        }
         res.status(200).json(updatedPart);
     } catch (err) {
         console.error('Error al actualizar el repuesto:', err);
-        res.status(500).send('Error al actualizar el repuesto');
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
 
@@ -113,7 +139,7 @@ app.delete('/api/parts/:id', async (req, res) => {
         res.status(204).send();
     } catch (err) {
         console.error('Error al eliminar el repuesto:', err);
-        res.status(500).send('Error al eliminar el repuesto');
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
 
