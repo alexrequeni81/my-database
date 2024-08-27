@@ -15,7 +15,7 @@ function cargarDatos(page = 1, search = '') {
             tableBody.innerHTML = '';
 
             if (data.parts.length === 0) {
-                document.getElementById('error').innerText = 'No se encontraron repuestos en la base de datos.';
+                tableBody.innerHTML = '<tr><td colspan="7" class="text-center">No se encontraron repuestos</td></tr>';
             } else {
                 data.parts.forEach(part => {
                     const row = document.createElement('tr');
@@ -31,7 +31,7 @@ function cargarDatos(page = 1, search = '') {
                             <button onclick="eliminarRepuesto('${part._id}')" class="btn btn-danger">Eliminar</button>
                         </td>
                         <td class="expand-collapse-button" onclick="toggleRow(this)">
-                            <i class="fas fa-chevron-down"></i> 
+                            <i class="fas fa-chevron-down"></i>
                         </td>
                     `;
                     tableBody.appendChild(row);
@@ -45,7 +45,7 @@ function cargarDatos(page = 1, search = '') {
         })
         .catch(error => {
             console.error('Error al cargar los repuestos:', error);
-            document.getElementById('error').innerText = 'Error al cargar los repuestos: ' + error.message;
+            mostrarError('Error al cargar los repuestos: ' + error.message);
         });
 }
 
@@ -81,12 +81,13 @@ function crearRepuesto() {
         return response.json();
     })
     .then(() => {
+        mostrarExito('Repuesto añadido correctamente');
         cargarDatos(currentPage);
         document.getElementById('addPartForm').reset();
     })
     .catch(error => {
         console.error('Error al crear el repuesto:', error);
-        document.getElementById('error').innerText = 'Error al crear el repuesto: ' + error.message;
+        mostrarError('Error al crear el repuesto: ' + error.message);
     });
 }
 
@@ -110,10 +111,11 @@ function editarRepuesto(id) {
             throw new Error('Error al actualizar el repuesto');
         }
         cargarDatos(currentPage);
+        mostrarExito('Repuesto actualizado correctamente');
     })
     .catch(error => {
         console.error('Error al actualizar el repuesto:', error);
-        document.getElementById('error').innerText = 'Error al actualizar el repuesto: ' + error.message;
+        mostrarError('Error al actualizar el repuesto: ' + error.message);
     });
 }
 
@@ -127,17 +129,32 @@ function eliminarRepuesto(id) {
                 throw new Error('Error al eliminar el repuesto');
             }
             cargarDatos(currentPage);
+            mostrarExito('Repuesto eliminado correctamente');
         })
         .catch(error => {
             console.error('Error al eliminar el repuesto:', error);
-            document.getElementById('error').innerText = 'Error al eliminar el repuesto: ' + error.message;
+            mostrarError('Error al eliminar el repuesto: ' + error.message);
         });
     }
 }
 
 function toggleRow(button) {
-  const row = button.closest('tr');
-  row.classList.toggle('expanded');
+    const row = button.closest('tr');
+    row.classList.toggle('expanded');
+}
+
+function mostrarExito(mensaje) {
+    const successDiv = document.getElementById('success');
+    successDiv.innerText = mensaje;
+    successDiv.style.display = 'block';
+    setTimeout(() => successDiv.style.display = 'none', 3000);
+}
+
+function mostrarError(mensaje) {
+    const errorDiv = document.getElementById('error');
+    errorDiv.innerText = mensaje;
+    errorDiv.style.display = 'block';
+    setTimeout(() => errorDiv.style.display = 'none', 5000);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
