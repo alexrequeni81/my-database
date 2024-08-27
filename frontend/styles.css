@@ -47,7 +47,7 @@ form input[type="number"]#addCantidad {
 }
 
 form button {
-  padding: 8px 15px;
+  padding: 8px 10px;
   border: none;
   border-radius: 5px;
   background-color: #28a745;
