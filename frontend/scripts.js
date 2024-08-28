@@ -31,31 +31,8 @@ function cargarDatos(page = 1, search = '') {
 }
 
 function buscarRepuestos() {
-  searchQuery = document.getElementById('searchInput').value.trim(); // Trim any extra spaces
-  const searchTerms = searchQuery.toLowerCase().split(' '); // Split into array of words
-  const tableBody = document.querySelector('#partsTable tbody');
-  const rows = tableBody.querySelectorAll('tr');
-  rows.forEach(row => {
-    let match = false;
-    const cells = row.querySelectorAll('td:not(:last-child)'); // Ignore the last cell (actions)
-    searchTerms.forEach(term => {
-      if (term === '') {
-        return; // Skip empty search terms
-      }
-      cells.forEach(cell => {
-        const cellText = cell.textContent.toLowerCase();
-        if (cellText.includes(term)) {
-          match = true;
-          return; // Stop searching in this row if a term is found
-        }
-      });
-    });
-    if (match) {
-      row.style.display = ''; // Show the row if there's a match
-    } else {
-      row.style.display = 'none'; // Hide the row if no match
-    }
-  });
+    searchQuery = document.getElementById('searchInput').value.trim();
+    cargarDatos(1, searchQuery);
 }
 
 function crearRepuesto() {
@@ -106,7 +83,4 @@ function mostrarError(mensaje) {
     setTimeout(() => errorDiv.style.display = 'none', 5000);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    cargarDatos();
-    buscarRepuestos();  // Aplicar búsqueda inmediatamente al cargar
-});
+document.addEventListener('DOMContentLoaded', () => cargarDatos());
