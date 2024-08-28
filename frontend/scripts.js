@@ -31,26 +31,31 @@ function cargarDatos(page = 1, search = '') {
 }
 
 function buscarRepuestos() {
-    // Obtener el valor del campo de búsqueda
-    const searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
-    
-    // Dividir la consulta en palabras clave
-    const searchTerms = searchQuery.split(/\s+/);
-
-    // Seleccionar todas las filas de la tabla
-    const rows = document.querySelectorAll('#partsTable tbody tr');
-
-    // Iterar sobre las filas
-    rows.forEach(row => {
-        // Obtener el texto de todas las celdas de la fila y concatenarlo
-        const rowText = Array.from(row.cells).map(cell => cell.textContent.toLowerCase()).join(' ');
-
-        // Verificar si todas las palabras clave están en el texto de la fila
-        const matches = searchTerms.every(term => rowText.includes(term));
-
-        // Mostrar u ocultar la fila según la coincidencia
-        row.style.display = matches ? '' : 'none';
+  searchQuery = document.getElementById('searchInput').value.trim(); // Trim any extra spaces
+  const searchTerms = searchQuery.toLowerCase().split(' '); // Split into array of words
+  const tableBody = document.querySelector('#partsTable tbody');
+  const rows = tableBody.querySelectorAll('tr');
+  rows.forEach(row => {
+    let match = false;
+    const cells = row.querySelectorAll('td:not(:last-child)'); // Ignore the last cell (actions)
+    searchTerms.forEach(term => {
+      if (term === '') {
+        return; // Skip empty search terms
+      }
+      cells.forEach(cell => {
+        const cellText = cell.textContent.toLowerCase();
+        if (cellText.includes(term)) {
+          match = true;
+          return; // Stop searching in this row if a term is found
+        }
+      });
     });
+    if (match) {
+      row.style.display = ''; // Show the row if there's a match
+    } else {
+      row.style.display = 'none'; // Hide the row if no match
+    }
+  });
 }
 
 function crearRepuesto() {
