@@ -31,9 +31,34 @@ function cargarDatos(page = 1, search = '') {
 }
 
 function buscarRepuestos() {
-    searchQuery = document.getElementById('searchInput').value.trim();
-    cargarDatos(1, searchQuery);
+    // Obtener el valor del campo de búsqueda
+    const searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
+    
+    // Dividir la consulta en palabras clave
+    const searchTerms = searchQuery.split(/\s+/);
+
+    // Seleccionar todas las filas de la tabla
+    const rows = document.querySelectorAll('#partsTable tbody tr');
+
+    // Iterar sobre las filas
+    rows.forEach(row => {
+        // Obtener el texto de todas las celdas de la fila y concatenarlo
+        const rowText = Array.from(row.cells).map(cell => cell.textContent.toLowerCase()).join(' ');
+
+        // Verificar si todas las palabras clave están en el texto de la fila
+        const matches = searchTerms.every(term => rowText.includes(term));
+
+        // Mostrar u ocultar la fila según la coincidencia
+        row.style.display = matches ? '' : 'none';
+    });
 }
+
+// Cargar los datos y aplicar la búsqueda al cargar la página
+document.addEventListener('DOMContentLoaded', () => {
+    cargarDatos();
+    buscarRepuestos();  // Para asegurar que la búsqueda funcione inmediatamente
+});
+
 
 function crearRepuesto() {
     const referencia = document.getElementById('addReferencia').value.trim();
