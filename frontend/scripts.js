@@ -53,13 +53,6 @@ function buscarRepuestos() {
     });
 }
 
-// Cargar los datos y aplicar la búsqueda al cargar la página
-document.addEventListener('DOMContentLoaded', () => {
-    cargarDatos();
-    buscarRepuestos();  // Para asegurar que la búsqueda funcione inmediatamente
-});
-
-
 function crearRepuesto() {
     const referencia = document.getElementById('addReferencia').value.trim();
     const descripcion = document.getElementById('addDescripcion').value.trim();
@@ -108,4 +101,7 @@ function mostrarError(mensaje) {
     setTimeout(() => errorDiv.style.display = 'none', 5000);
 }
 
-document.addEventListener('DOMContentLoaded', () => cargarDatos());
+document.addEventListener('DOMContentLoaded', () => {
+    cargarDatos();
+    buscarRepuestos();  // Aplicar búsqueda inmediatamente al cargar
+});
