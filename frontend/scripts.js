@@ -6,33 +6,34 @@ function cargarDatos(page = 1, search = '') {
     fetch(`/api/parts?page=${page}&limit=${limit}&search=${search}`)
         .then(response => response.json())
         .then(data => {
-            const tableBody = document.querySelector('#partsTable tbody');
-            tableBody.innerHTML = '';
-
-            if (data.parts.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="7">No se encontraron repuestos</td></tr>';
-            } else {
-                data.parts.forEach(part => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${part.REFERENCIA}</td>
-                        <td>${part.DESCRIPCIÓN}</td>
-                        <td>${part.MÁQUINA}</td>
-                        <td>${part.GRUPO}</td>
-                        <td>${part.COMENTARIO}</td>
-                        <td>${part.CANTIDAD}</td>
-                        <td><button onclick="eliminarRepuesto('${part._id}')">Eliminar</button></td>
-                    `;
-                    tableBody.appendChild(row);
-                });
-            }
+            mostrarDatos(data.parts);
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => console.error('Error al cargar los repuestos:', error));
 }
 
 function buscarRepuestos() {
-    searchQuery = document.getElementById('searchInput').value.trim();
-    cargarDatos(1, searchQuery);
+    const textoBusqueda = document.getElementById('searchInput').value.trim().toLowerCase();
+    const palabrasClave = textoBusqueda.split(/\s+/);  // Divide el texto en palabras clave separadas por espacios.
+
+    fetch('/api/parts')  // Cargamos todos los datos de la API.
+        .then(response => response.json())
+        .then(data => {
+            const datosFiltrados = data.parts.filter(part => {
+                const textoCompleto = [
+                    part.REFERENCIA,
+                    part.DESCRIPCIÓN,
+                    part.MÁQUINA,
+                    part.GRUPO,
+                    part.COMENTARIO,
+                    part.CANTIDAD.toString()
+                ].join(" ").toLowerCase();
+
+                return palabrasClave.every(palabra => textoCompleto.includes(palabra));
+            });
+
+            mostrarDatos(datosFiltrados);  // Muestra los datos filtrados en la tabla.
+        })
+        .catch(error => console.error('Error al buscar repuestos:', error));
 }
 
 function crearRepuesto() {
@@ -58,14 +59,37 @@ function crearRepuesto() {
         cargarDatos(currentPage);
         document.getElementById('addPartForm').reset();
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => console.error('Error al crear el repuesto:', error));
 }
 
 function eliminarRepuesto(id) {
     if (confirm('¿Está seguro de que desea eliminar este repuesto?')) {
         fetch(`/api/parts/${id}`, { method: 'DELETE' })
             .then(() => cargarDatos(currentPage))
-            .catch(error => console.error('Error:', error));
+            .catch(error => console.error('Error al eliminar el repuesto:', error));
+    }
+}
+
+function mostrarDatos(parts) {
+    const tableBody = document.querySelector('#partsTable tbody');
+    tableBody.innerHTML = '';  // Limpiamos la tabla antes de insertar nuevos datos.
+
+    if (parts.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="7">No se encontraron repuestos</td></tr>';
+    } else {
+        parts.forEach(part => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${part.REFERENCIA}</td>
+                <td>${part.DESCRIPCIÓN}</td>
+                <td>${part.MÁQUINA}</td>
+                <td>${part.GRUPO}</td>
+                <td>${part.COMENTARIO}</td>
+                <td>${part.CANTIDAD}</td>
+                <td><button onclick="eliminarRepuesto('${part._id}')">Eliminar</button></td>
+            `;
+            tableBody.appendChild(row);
+        });
     }
 }
 
