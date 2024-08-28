@@ -14,15 +14,14 @@ function cargarDatos(page = 1, search = '') {
             } else {
                 data.parts.forEach(part => {
                     const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${part.REFERENCIA}</td>
+                    row.innerHTML = 
+                        `<td>${part.REFERENCIA}</td>
                         <td>${part.DESCRIPCIÓN}</td>
                         <td>${part.MÁQUINA}</td>
                         <td>${part.GRUPO}</td>
                         <td>${part.COMENTARIO}</td>
                         <td>${part.CANTIDAD}</td>
-                        <td><button onclick="eliminarRepuesto('${part._id}')">Eliminar</button></td>
-                    `;
+                        <td><button onclick="eliminarRepuesto('${part._id}')">Eliminar</button></td>`;
                     tableBody.appendChild(row);
                 });
             }
@@ -31,10 +30,11 @@ function cargarDatos(page = 1, search = '') {
 }
 
 function buscarRepuestos() {
-    searchQuery = document.getElementById('searchInput').value.trim(); // Trim any extra spaces
+    searchQuery = document.getElementById('searchInput').value.trim();
     const searchTerms = searchQuery.toLowerCase().split(' '); // Split into array of words
     const tableBody = document.querySelector('#partsTable tbody');
     const rows = tableBody.querySelectorAll('tr');
+
     rows.forEach(row => {
         let match = false;
         const cells = row.querySelectorAll('td:not(:last-child)'); // Ignore the last cell (actions)
@@ -106,4 +106,8 @@ function mostrarError(mensaje) {
     setTimeout(() => errorDiv.style.display = 'none', 5000);
 }
 
+// Event listener to trigger search on input
+document.getElementById('searchInput').addEventListener('input', buscarRepuestos);
+
+// Initial data load when DOM content is fully loaded
 document.addEventListener('DOMContentLoaded', () => cargarDatos());
