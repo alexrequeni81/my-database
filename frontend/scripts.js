@@ -20,12 +20,12 @@ function buscarRepuestos() {
         .then(data => {
             const datosFiltrados = data.parts.filter(part => {
                 const textoCompleto = [
-                    part.REFERENCIA,
-                    part.DESCRIPCIÓN,
-                    part.MÁQUINA,
-                    part.GRUPO,
-                    part.COMENTARIO,
-                    part.CANTIDAD.toString()
+                    part.REFERENCIA || '',   // Aseguramos que la propiedad no sea null/undefined
+                    part.DESCRIPCIÓN || '',
+                    part.MÁQUINA || '',
+                    part.GRUPO || '',
+                    part.COMENTARIO || '',
+                    (part.CANTIDAD || '').toString()  // Convertimos CANTIDAD a cadena de forma segura
                 ].join(" ").toLowerCase();
 
                 return palabrasClave.every(palabra => textoCompleto.includes(palabra));
