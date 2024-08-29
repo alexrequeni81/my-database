@@ -84,7 +84,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 body: JSON.stringify(newData)
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la solicitud');
+                }
+                return response.json();
+            })
             .then(result => {
                 console.log('Registro guardado:', result);
                 // Remover los botones después de guardar
