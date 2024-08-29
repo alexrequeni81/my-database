@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAT - REPUESTOS</title>
+    <title>Visualización y Filtrado de Datos</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>SAT - REPUESTOS</h1>
-        <label for="buscador">Buscar repuesto:</label>
-        <input type="text" id="buscador" placeholder="Buscar repuestos...">
-        <table id="partsTable">
+        <h1>Tabla Interactiva de Repuestos</h1>
+        <input type="text" id="search" placeholder="Buscar en la tabla...">
+        <table id="data-table">
             <thead>
                 <tr>
                     <th>REFERENCIA</th>
@@ -20,24 +19,12 @@
                     <th>GRUPO</th>
                     <th>COMENTARIO</th>
                     <th>CANTIDAD</th>
-                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Los datos se insertarán aquí -->
+                <!-- Las filas serán insertadas dinámicamente -->
             </tbody>
         </table>
-        <form id="addPartForm">
-            <input type="text" id="addReferencia" placeholder="Referencia" required>
-            <input type="text" id="addDescripcion" placeholder="Descripción" required>
-            <input type="text" id="addMaquina" placeholder="Máquina" required>
-            <input type="text" id="addGrupo" placeholder="Grupo" required>
-            <input type="text" id="addComentario" placeholder="Comentario" required>
-            <input type="number" id="addCantidad" placeholder="Cantidad" required>
-            <button type="button" onclick="crearRepuesto()">Añadir</button>
-        </form>
-        <div id="error" class="alert" style="display: none;"></div>
-        <div id="success" class="alert" style="display: none;"></div>
     </div>
     <script src="scripts.js"></script>
 </body>
