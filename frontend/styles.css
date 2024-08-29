@@ -65,3 +65,39 @@ tr:hover {
         font-size: 14px;
     }
 }
+
+#add-row {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+#add-row:hover {
+    background-color: #218838;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.action-buttons button {
+    padding: 5px 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+}
+
+.validate {
+    background-color: #28a745;
+    color: white;
+}
+
+.cancel {
+    background-color: #dc3545;
+    color: white;
+}
+
