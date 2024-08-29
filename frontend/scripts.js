@@ -1,6 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('search');
     const table = document.getElementById('data-table').getElementsByTagName('tbody')[0];
+    const dataTable = document.getElementById('data-table');  // Refers to the entire table
+
+    // Hide the table initially
+    dataTable.style.display = 'none';
 
     // Fetch data from the server and populate the table
     fetch('/api/data')
@@ -33,11 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
             rows[i].style.display = match ? '' : 'none';
         }
 
-        // Hide table if no input
-        if (!filter) {
-            table.style.display = 'none';
-        } else {
-            table.style.display = '';
-        }
+        // Toggle the table's visibility based on the filter
+        dataTable.style.display = filter ? '' : 'none';
     });
 });
