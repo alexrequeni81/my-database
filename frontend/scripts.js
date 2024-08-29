@@ -20,21 +20,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Search and filter functionality
     searchInput.addEventListener('input', function() {
-        const filter = searchInput.value.toLowerCase();
+        const filter = searchInput.value.toLowerCase().trim();
+        const keywords = filter.split(/\s+/); // Split the input by spaces
         const rows = table.getElementsByTagName('tr');
 
         for (let i = 0; i < rows.length; i++) {
             let cells = rows[i].getElementsByTagName('td');
-            let match = false;
+            let match = keywords.every(keyword => {
+                return Array.from(cells).some(cell => cell.textContent.toLowerCase().includes(keyword));
+            });
 
-            for (let j = 0; j < cells.length; j++) {
-                if (cells[j]) {
-                    if (cells[j].textContent.toLowerCase().indexOf(filter) > -1) {
-                        match = true;
-                        break;
-                    }
-                }
-            }
             rows[i].style.display = match ? '' : 'none';
         }
 
