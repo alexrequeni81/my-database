@@ -10,15 +10,16 @@ const client = new MongoClient(process.env.MONGODB_URI, { useNewUrlParser: true,
 
 app.use(express.static(path.join(__dirname, 'frontend')));
 
-app.get('/api/data', async (req, res) => {
+app.post('/api/data', async (req, res) => {
     try {
-        await client.connect();
+        const newData = req.body;
         const database = client.db('spareparts');
         const collection = database.collection('databasev1');
-        const data = await collection.find({}).toArray();
-        res.json(data);
+        const result = await collection.insertOne(newData);
+        res.status(201).json(result);
     } catch (error) {
-        res.status(500).send('Error fetching data from MongoDB');
+        console.error('Error al insertar el registro:', error);
+        res.status(500).send('Error al insertar el registro');
     }
 });
 
