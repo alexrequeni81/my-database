@@ -8,24 +8,25 @@
 </head>
 <body>
     <div class="container">
-        <h1>Tabla Interactiva de Repuestos</h1>
-        <input type="text" id="search" placeholder="Buscar en la tabla...">
-        <table id="data-table">
-            <thead>
-                <tr>
-                    <th>REFERENCIA</th>
-                    <th>DESCRIPCIÓN</th>
-                    <th>MÁQUINA</th>
-                    <th>GRUPO</th>
-                    <th>COMENTARIO</th>
-                    <th>CANTIDAD</th>
-                    <th><button id="add-row">+</button></th> <!-- Botón para añadir fila -->
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Las filas serán insertadas dinámicamente -->
-            </tbody>
-        </table>
+    <h1>Tabla Interactiva de Repuestos</h1>
+    <input type="text" id="search" placeholder="Buscar en la tabla...">
+    <button id="add-row">+</button> <!-- Botón para añadir fila -->
+    <table id="data-table">
+        <thead>
+            <tr>
+                <th>REFERENCIA</th>
+                <th>DESCRIPCIÓN</th>
+                <th>MÁQUINA</th>
+                <th>GRUPO</th>
+                <th>COMENTARIO</th>
+                <th>CANTIDAD</th>
+                <th>Acciones</th> <!-- Columna para los botones de acción -->
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Las filas serán insertadas dinámicamente -->
+        </tbody>
+    </table>
     </div>
     <script src="scripts.js"></script>
 </body>
