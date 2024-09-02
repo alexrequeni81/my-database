@@ -26,6 +26,8 @@ function cargarDatos(page = 1, search = '') {
                     `;
                     tableBody.appendChild(row);
                 });
+                // Aplicar filtrado en cliente después de cargar datos
+                filtrarTabla();
             }
         })
         .catch(error => console.error('Error:', error));
