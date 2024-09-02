@@ -40,21 +40,21 @@ function buscarRepuestos() {
 }
 
 // Filtrado en tiempo real en el cliente
-document.getElementById('search-input').addEventListener('input', function() {
-    let filter = this.value.toLowerCase();
+function filtrarTabla() {
+    let filter = document.getElementById('searchInput').value.toLowerCase();
     let words = filter.split(' ').filter(word => word.trim() !== ''); // Dividimos por espacios y eliminamos entradas vacías
 
-    let rows = document.querySelectorAll('#parts-table tbody tr');
+    let rows = document.querySelectorAll('#partsTable tbody tr');
 
     rows.forEach(row => {
         let rowText = row.innerText.toLowerCase(); // Convertimos todo el texto de la fila a minúsculas
         let match = words.every(word => rowText.includes(word)); // Verificamos que todas las palabras se encuentren en la fila
         row.style.display = match ? '' : 'none';
     });
-});
+}
 
 // Asignar eventos
-document.getElementById('searchInput').addEventListener('input', filtrarTabla);
+document.getElementById('searchInput').addEventListener('input', buscarRepuestos);
 document.addEventListener('DOMContentLoaded', () => cargarDatos());
 
 // Funciones adicionales como crearRepuesto, eliminarRepuesto, mostrarExito y mostrarError permanecen igual
