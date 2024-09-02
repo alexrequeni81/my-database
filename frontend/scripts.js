@@ -40,19 +40,18 @@ function buscarRepuestos() {
 }
 
 // Filtrado en tiempo real en el cliente
-function filtrarTabla() {
-    const filter = document.getElementById('searchInput').value.toLowerCase().trim();
-    const keywords = filter.split(/\s+/); // Dividir el input por espacios
-    const rows = document.querySelectorAll('#partsTable tbody tr');
+document.getElementById('search-input').addEventListener('input', function() {
+    let filter = this.value.toLowerCase();
+    let words = filter.split(' ').filter(word => word.trim() !== ''); // Dividimos por espacios y eliminamos entradas vacías
+
+    let rows = document.querySelectorAll('#parts-table tbody tr');
 
     rows.forEach(row => {
-        const cells = Array.from(row.getElementsByTagName('td'));
-        const match = keywords.every(keyword => 
-            cells.some(cell => cell.textContent.toLowerCase().includes(keyword))
-        );
+        let rowText = row.innerText.toLowerCase(); // Convertimos todo el texto de la fila a minúsculas
+        let match = words.every(word => rowText.includes(word)); // Verificamos que todas las palabras se encuentren en la fila
         row.style.display = match ? '' : 'none';
     });
-}
+});
 
 // Asignar eventos
 document.getElementById('searchInput').addEventListener('input', filtrarTabla);
