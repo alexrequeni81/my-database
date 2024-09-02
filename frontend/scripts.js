@@ -33,28 +33,40 @@ function cargarDatos(page = 1, search = '') {
         .catch(error => console.error('Error:', error));
 }
 
-// Función para manejar la búsqueda y cargar datos
-function buscarRepuestos() {
-    searchQuery = document.getElementById('searchInput').value.trim();
-    cargarDatos(1, searchQuery);
-}
-
 // Filtrado en tiempo real en el cliente
 function filtrarTabla() {
-    let filter = document.getElementById('searchInput').value.toLowerCase();
+    let filter = document.getElementById('searchInput').value.toLowerCase().trim();
     let words = filter.split(' ').filter(word => word.trim() !== ''); // Dividimos por espacios y eliminamos entradas vacías
 
     let rows = document.querySelectorAll('#partsTable tbody tr');
 
     rows.forEach(row => {
-        let rowText = row.innerText.toLowerCase(); // Convertimos todo el texto de la fila a minúsculas
-        let match = words.every(word => rowText.includes(word)); // Verificamos que todas las palabras se encuentren en la fila
+        let rowText = ''; // Inicializamos el texto concatenado
+        let cells = row.querySelectorAll('td'); // Seleccionamos todas las celdas de la fila
+
+        cells.forEach(cell => {
+            rowText += cell.innerText.toLowerCase(); // Concatenamos el texto de todas las celdas
+        });
+
+        // Ahora revisamos si la secuencia de palabras aparece en el texto concatenado
+        let match = true;
+        let currentIndex = 0;
+
+        for (let word of words) {
+            currentIndex = rowText.indexOf(word, currentIndex);
+            if (currentIndex === -1) {
+                match = false;
+                break;
+            }
+            currentIndex += word.length; // Avanzamos en el índice
+        }
+
         row.style.display = match ? '' : 'none';
     });
 }
 
 // Asignar eventos
-document.getElementById('searchInput').addEventListener('input', buscarRepuestos);
+document.getElementById('searchInput').addEventListener('input', filtrarTabla);
 document.addEventListener('DOMContentLoaded', () => cargarDatos());
 
 // Funciones adicionales como crearRepuesto, eliminarRepuesto, mostrarExito y mostrarError permanecen igual
