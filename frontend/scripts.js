@@ -1,106 +1,86 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('search');
-    const table = document.getElementById('data-table').getElementsByTagName('tbody')[0];
-    const dataTable = document.getElementById('data-table');  // Refers to the entire table
-    const addRowButton = document.getElementById('add-row');
+let currentPage = 1;
+const limit = 10;
+let searchQuery = '';
 
-    // Hide the table initially
-    dataTable.style.display = 'none';
-
-    // Fetch data from the server and populate the table
-    fetch('/api/data')
+function cargarDatos(page = 1, search = '') {
+    fetch(`/api/parts?page=${page}&limit=${limit}&search=${search}`)
         .then(response => response.json())
         .then(data => {
-            data.forEach(item => {
-                let row = table.insertRow();
-                row.insertCell(0).textContent = item.REFERENCIA || '';
-                row.insertCell(1).textContent = item.DESCRIPCIÓN || '';
-                row.insertCell(2).textContent = item.MÁQUINA || '';
-                row.insertCell(3).textContent = item.GRUPO || '';
-                row.insertCell(4).textContent = item.COMENTARIO || '';
-                row.insertCell(5).textContent = item.CANTIDAD || '';
-                row.insertCell(6).innerHTML = ''; // For action buttons
-            });
+            const tableBody = document.querySelector('#partsTable tbody');
+            tableBody.innerHTML = '';
+
+            if (data.parts.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="7">No se encontraron repuestos</td></tr>';
+            } else {
+                data.parts.forEach(part => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${part.REFERENCIA}</td>
+                        <td>${part.DESCRIPCIÓN}</td>
+                        <td>${part.MÁQUINA}</td>
+                        <td>${part.GRUPO}</td>
+                        <td>${part.COMENTARIO}</td>
+                        <td>${part.CANTIDAD}</td>
+                        <td><button onclick="eliminarRepuesto('${part._id}')">Eliminar</button></td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            }
         })
-        .catch(error => console.error('Error fetching data:', error));
+        .catch(error => console.error('Error:', error));
+}
 
-    // Search and filter functionality
-    searchInput.addEventListener('input', function() {
-        const filter = searchInput.value.toLowerCase().trim();
-        const keywords = filter.split(/\s+/); // Split the input by spaces
-        const rows = table.getElementsByTagName('tr');
+function buscarRepuestos() {
+    searchQuery = document.getElementById('searchInput').value.trim();
+    cargarDatos(1, searchQuery);
+}
 
-        for (let i = 0; i < rows.length; i++) {
-            let cells = rows[i].getElementsByTagName('td');
-            let match = keywords.every(keyword => {
-                return Array.from(cells).some(cell => cell.textContent.toLowerCase().includes(keyword));
-            });
+function crearRepuesto() {
+    const referencia = document.getElementById('addReferencia').value.trim();
+    const descripcion = document.getElementById('addDescripcion').value.trim();
+    const maquina = document.getElementById('addMaquina').value.trim();
+    const grupo = document.getElementById('addGrupo').value.trim();
+    const comentario = document.getElementById('addComentario').value.trim();
+    const cantidad = parseInt(document.getElementById('addCantidad').value.trim(), 10);
 
-            rows[i].style.display = match ? '' : 'none';
-        }
+    if (!referencia || !descripcion || !maquina || !grupo || !comentario || isNaN(cantidad)) {
+        mostrarError('Todos los campos son obligatorios');
+        return;
+    }
 
-        // Toggle the table's visibility based on the filter
-        dataTable.style.display = filter ? '' : 'none';
-    });
+    fetch('/api/parts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ referencia, descripcion, maquina, grupo, comentario, cantidad })
+    })
+    .then(() => {
+        mostrarExito('Repuesto añadido correctamente');
+        cargarDatos(currentPage);
+        document.getElementById('addPartForm').reset();
+    })
+    .catch(error => console.error('Error:', error));
+}
 
-    // Add new row functionality
-    addRowButton.addEventListener('click', function() {
-        const newRow = table.insertRow();
-        for (let i = 0; i < 6; i++) { // Create 6 editable cells
-            const newCell = newRow.insertCell(i);
-            newCell.contentEditable = true;
-        }
+function eliminarRepuesto(id) {
+    if (confirm('¿Está seguro de que desea eliminar este repuesto?')) {
+        fetch(`/api/parts/${id}`, { method: 'DELETE' })
+            .then(() => cargarDatos(currentPage))
+            .catch(error => console.error('Error:', error));
+    }
+}
 
-        // Add action buttons (validate and cancel)
-        const actionCell = newRow.insertCell(6);
-        actionCell.className = 'action-buttons';
+function mostrarExito(mensaje) {
+    const successDiv = document.getElementById('success');
+    successDiv.innerText = mensaje;
+    successDiv.style.display = 'block';
+    setTimeout(() => successDiv.style.display = 'none', 3000);
+}
 
-        const validateButton = document.createElement('button');
-        validateButton.textContent = '✔️';
-        validateButton.className = 'validate';
+function mostrarError(mensaje) {
+    const errorDiv = document.getElementById('error');
+    errorDiv.innerText = mensaje;
+    errorDiv.style.display = 'block';
+    setTimeout(() => errorDiv.style.display = 'none', 5000);
+}
 
-        const cancelButton = document.createElement('button');
-        cancelButton.textContent = '❌';
-        cancelButton.className = 'cancel';
-
-        actionCell.appendChild(validateButton);
-        actionCell.appendChild(cancelButton);
-
-        // Event to validate the new row
-        validateButton.addEventListener('click', function() {
-            const newData = {
-                REFERENCIA: newRow.cells[0].textContent.trim(),
-                DESCRIPCIÓN: newRow.cells[1].textContent.trim(),
-                MÁQUINA: newRow.cells[2].textContent.trim(),
-                GRUPO: newRow.cells[3].textContent.trim(),
-                COMENTARIO: newRow.cells[4].textContent.trim(),
-                CANTIDAD: newRow.cells[5].textContent.trim()
-            };
-
-            fetch('/api/data', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(newData)
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Error en la solicitud');
-                }
-                return response.json();
-            })
-            .then(result => {
-                console.log('Registro guardado:', result);
-                // Remover los botones después de guardar
-                actionCell.innerHTML = '';
-            })
-            .catch(error => console.error('Error al guardar el registro:', error));
-        });
-
-        // Event to cancel the new row
-        cancelButton.addEventListener('click', function() {
-            table.deleteRow(newRow.rowIndex);
-        });
-    });
-});
+document.addEventListener('DOMContentLoaded', () => cargarDatos());
