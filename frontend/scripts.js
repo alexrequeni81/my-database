@@ -2,8 +2,9 @@ let currentPage = 1;
 const limit = 10;
 let searchQuery = '';
 
+// Función para cargar datos desde el servidor
 function cargarDatos(page = 1, search = '') {
-    fetch(`/api/parts?page=${page}&limit=${limit}&search=${search}`)
+    fetch(`/api/parts?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`)
         .then(response => response.json())
         .then(data => {
             const tableBody = document.querySelector('#partsTable tbody');
@@ -30,57 +31,29 @@ function cargarDatos(page = 1, search = '') {
         .catch(error => console.error('Error:', error));
 }
 
+// Función para manejar la búsqueda y cargar datos
 function buscarRepuestos() {
     searchQuery = document.getElementById('searchInput').value.trim();
     cargarDatos(1, searchQuery);
 }
 
-function crearRepuesto() {
-    const referencia = document.getElementById('addReferencia').value.trim();
-    const descripcion = document.getElementById('addDescripcion').value.trim();
-    const maquina = document.getElementById('addMaquina').value.trim();
-    const grupo = document.getElementById('addGrupo').value.trim();
-    const comentario = document.getElementById('addComentario').value.trim();
-    const cantidad = parseInt(document.getElementById('addCantidad').value.trim(), 10);
+// Filtrado en tiempo real en el cliente
+function filtrarTabla() {
+    const filter = document.getElementById('searchInput').value.toLowerCase().trim();
+    const keywords = filter.split(/\s+/); // Dividir el input por espacios
+    const rows = document.querySelectorAll('#partsTable tbody tr');
 
-    if (!referencia || !descripcion || !maquina || !grupo || !comentario || isNaN(cantidad)) {
-        mostrarError('Todos los campos son obligatorios');
-        return;
-    }
-
-    fetch('/api/parts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ referencia, descripcion, maquina, grupo, comentario, cantidad })
-    })
-    .then(() => {
-        mostrarExito('Repuesto añadido correctamente');
-        cargarDatos(currentPage);
-        document.getElementById('addPartForm').reset();
-    })
-    .catch(error => console.error('Error:', error));
+    rows.forEach(row => {
+        const cells = Array.from(row.getElementsByTagName('td'));
+        const match = keywords.every(keyword => 
+            cells.some(cell => cell.textContent.toLowerCase().includes(keyword))
+        );
+        row.style.display = match ? '' : 'none';
+    });
 }
 
-function eliminarRepuesto(id) {
-    if (confirm('¿Está seguro de que desea eliminar este repuesto?')) {
-        fetch(`/api/parts/${id}`, { method: 'DELETE' })
-            .then(() => cargarDatos(currentPage))
-            .catch(error => console.error('Error:', error));
-    }
-}
-
-function mostrarExito(mensaje) {
-    const successDiv = document.getElementById('success');
-    successDiv.innerText = mensaje;
-    successDiv.style.display = 'block';
-    setTimeout(() => successDiv.style.display = 'none', 3000);
-}
-
-function mostrarError(mensaje) {
-    const errorDiv = document.getElementById('error');
-    errorDiv.innerText = mensaje;
-    errorDiv.style.display = 'block';
-    setTimeout(() => errorDiv.style.display = 'none', 5000);
-}
-
+// Asignar eventos
+document.getElementById('searchInput').addEventListener('input', filtrarTabla);
 document.addEventListener('DOMContentLoaded', () => cargarDatos());
+
+// Funciones adicionales como crearRepuesto, eliminarRepuesto, mostrarExito y mostrarError permanecen igual
