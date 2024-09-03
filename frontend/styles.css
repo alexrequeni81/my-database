@@ -20,23 +20,26 @@ h1 {
 
 form {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 10px;
+    flex-wrap: nowrap;
+    gap: 5px;
     margin-bottom: 20px;
     justify-content: center;
 }
 
 form input {
-    padding: 10px;
+    padding: 8px;
     border-radius: 5px;
     border: 1px solid #ccc;
-    width: 48%;
+    width: 18%;
     box-sizing: border-box;
 }
 
+form input#addMaquina, form input#addGrupo, form input#addCantidad {
+    width: 12%;
+}
+
 form button {
-    padding: 8px 16px;
+    padding: 8px 12px;
     border-radius: 5px;
     border: none;
     cursor: pointer;
