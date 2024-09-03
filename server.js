@@ -3,6 +3,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const bodyParser = require('body-parser');
+const cron = require('node-cron');
+const axios = require('axios');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -152,6 +154,13 @@ app.delete('/api/parts/:id', async (req, res) => {
 // Servir el archivo 'index.html' en la ruta raíz
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
+});
+
+// Cron job para hacer ping cada 5 minutos 
+cron.schedule('*/1 * * * *', () => { 
+    axios.get('https://my-database-ahys.onrender.com/') // Cambia por tu dominio en Render 
+        .then(() => console.log('Ping exitoso, el servidor sigue activo')) 
+        .catch(err => console.error('Error al hacer ping:', err)); 
 });
 
 // Iniciar el servidor
