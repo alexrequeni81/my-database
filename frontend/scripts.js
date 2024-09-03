@@ -35,38 +35,24 @@ function cargarDatos(page = 1, search = '') {
 
 // Filtrado en tiempo real en el cliente
 function filtrarTabla() {
-    let filter = document.getElementById('searchInput').value.toLowerCase().trim();
+    let filter = document.getElementById('searchInput').value.toLowerCase();
     let words = filter.split(' ').filter(word => word.trim() !== ''); // Dividimos por espacios y eliminamos entradas vacías
 
     let rows = document.querySelectorAll('#partsTable tbody tr');
 
     rows.forEach(row => {
-        let rowText = ''; // Inicializamos el texto concatenado
-        let cells = row.querySelectorAll('td'); // Seleccionamos todas las celdas de la fila
+        // Concatenamos todo el contenido de las celdas en una sola cadena de texto
+        let rowText = Array.from(row.querySelectorAll('td'))
+                           .map(td => td.innerText.toLowerCase())
+                           .join(' ');
 
-        cells.forEach(cell => {
-            rowText += cell.innerText.toLowerCase(); // Concatenamos el texto de todas las celdas
-        });
-
-        // Ahora revisamos si la secuencia de palabras aparece en el texto concatenado
-        let match = true;
-        let currentIndex = 0;
-
-        for (let word of words) {
-            currentIndex = rowText.indexOf(word, currentIndex);
-            if (currentIndex === -1) {
-                match = false;
-                break;
-            }
-            currentIndex += word.length; // Avanzamos en el índice
-        }
-
-        row.style.display = match ? '' : 'none';
+        // Verificamos que cada palabra de la búsqueda esté presente en la cadena combinada
+        let match = words.every(word => rowText.includes(word));
+        
+        row.style.display = match ? '' : 'none'; // Mostramos u ocultamos la fila dependiendo del resultado
     });
 }
 
 // Asignar eventos
 document.getElementById('searchInput').addEventListener('input', filtrarTabla);
 document.addEventListener('DOMContentLoaded', () => cargarDatos());
-
-// Funciones adicionales como crearRepuesto, eliminarRepuesto, mostrarExito y mostrarError permanecen igual
