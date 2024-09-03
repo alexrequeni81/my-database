@@ -1,6 +1,8 @@
 let currentPage = 1;
 const limit = 10;
 let searchQuery = '';
+let isEditing = false;
+let editingId = null;
 
 function cargarDatos(page = 1, search = '') {
     fetch(`/api/parts?page=${page}&limit=${limit}&search=${search}`)
@@ -14,14 +16,18 @@ function cargarDatos(page = 1, search = '') {
             } else {
                 data.parts.forEach(part => {
                     const row = document.createElement('tr');
+                    row.setAttribute('data-id', part._id);
                     row.innerHTML = `
-                        <td>${part.REFERENCIA}</td>
-                        <td>${part.DESCRIPCIÓN}</td>
-                        <td>${part.MÁQUINA}</td>
-                        <td>${part.GRUPO}</td>
-                        <td>${part.COMENTARIO}</td>
-                        <td>${part.CANTIDAD}</td>
-                        <td><button onclick="eliminarRepuesto('${part._id}')">Eliminar</button></td>
+                        <td>${part.REFERENCIA || ''}</td>
+                        <td>${part.DESCRIPCIÓN || ''}</td>
+                        <td>${part.MÁQUINA || ''}</td>
+                        <td>${part.GRUPO || ''}</td>
+                        <td>${part.COMENTARIO || ''}</td>
+                        <td>${part.CANTIDAD || ''}</td>
+                        <td class="action-buttons">
+                            <button class="edit-button" onclick="editarRepuesto('${part._id}')">✏️</button>
+                            <button class="delete-button" onclick="eliminarRepuesto('${part._id}')">🗑️</button>
+                        </td>
                     `;
                     tableBody.appendChild(row);
                 });
@@ -41,31 +47,60 @@ function crearRepuesto() {
     const maquina = document.getElementById('addMaquina').value.trim();
     const grupo = document.getElementById('addGrupo').value.trim();
     const comentario = document.getElementById('addComentario').value.trim();
-    const cantidad = parseInt(document.getElementById('addCantidad').value.trim(), 10);
+    const cantidad = document.getElementById('addCantidad').value.trim() !== '' 
+                     ? parseInt(document.getElementById('addCantidad').value.trim(), 10) 
+                     : undefined;
 
-    if (!referencia || !descripcion || !maquina || !grupo || !comentario || isNaN(cantidad)) {
-        mostrarError('Todos los campos son obligatorios');
-        return;
-    }
+    const method = isEditing ? 'PUT' : 'POST';
+    const url = isEditing ? `/api/parts/${editingId}` : '/api/parts';
 
-    fetch('/api/parts', {
-        method: 'POST',
+    fetch(url, {
+        method: method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ referencia, descripcion, maquina, grupo, comentario, cantidad })
     })
     .then(() => {
-        mostrarExito('Repuesto añadido correctamente');
+        const message = isEditing ? 'Repuesto editado correctamente' : 'Repuesto añadido correctamente';
+        mostrarExito(message);
         cargarDatos(currentPage);
-        document.getElementById('addPartForm').reset();
+        cancelarEdicion();
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => mostrarError('Error al guardar el repuesto.'));
+}
+
+function editarRepuesto(id) {
+    const row = document.querySelector(`tr[data-id="${id}"]`);
+    const cells = row.querySelectorAll('td');
+
+    document.getElementById('addReferencia').value = cells[0].textContent;
+    document.getElementById('addDescripcion').value = cells[1].textContent;
+    document.getElementById('addMaquina').value = cells[2].textContent;
+    document.getElementById('addGrupo').value = cells[3].textContent;
+    document.getElementById('addComentario').value = cells[4].textContent;
+    document.getElementById('addCantidad').value = cells[5].textContent;
+
+    isEditing = true;
+    editingId = id;
+    document.getElementById('saveButton').textContent = 'Guardar';
+    document.getElementById('cancelButton').style.display = 'inline-block';
+}
+
+function cancelarEdicion() {
+    isEditing = false;
+    editingId = null;
+    document.getElementById('addPartForm').reset();
+    document.getElementById('saveButton').textContent = 'Añadir';
+    document.getElementById('cancelButton').style.display = 'none';
 }
 
 function eliminarRepuesto(id) {
     if (confirm('¿Está seguro de que desea eliminar este repuesto?')) {
         fetch(`/api/parts/${id}`, { method: 'DELETE' })
-            .then(() => cargarDatos(currentPage))
-            .catch(error => console.error('Error:', error));
+            .then(() => {
+                mostrarExito('Repuesto eliminado correctamente');
+                cargarDatos(currentPage);
+            })
+            .catch(error => mostrarError('Error al eliminar el repuesto.'));
     }
 }
 
