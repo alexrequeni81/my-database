@@ -3,41 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAT - REPUESTOS</title>
+    <title>Gestión de Repuestos</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>SAT - REPUESTOS</h1>
-        <input type="text" id="searchInput" placeholder="Buscar repuestos..." onkeyup="filtrarTabla()">
-        <form id="addPartForm">
-            <input type="text" id="addReferencia" placeholder="Referencia" required>
-            <input type="text" id="addDescripcion" placeholder="Descripción" required>
-            <input type="text" id="addMaquina" placeholder="Máquina" required>
-            <input type="text" id="addGrupo" placeholder="Grupo" required>
-            <input type="text" id="addComentario" placeholder="Comentario" required>
-            <input type="number" id="addCantidad" placeholder="Cantidad" required>
-            <button type="button" onclick="crearRepuesto()">Añadir</button>
-        </form>
-        <div id="error" class="alert" style="display: none;"></div>
-        <div id="success" class="alert" style="display: none;"></div>
-        <table id="partsTable">
-            <thead>
-                <tr>
-                    <th>REFERENCIA</th>
-                    <th>DESCRIPCIÓN</th>
-                    <th>MÁQUINA</th>
-                    <th>GRUPO</th>
-                    <th>COMENTARIO</th>
-                    <th>CANTIDAD</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Los datos se insertarán aquí -->
-            </tbody>
-        </table>
-    </div>
+    <h1>Gestión de Repuestos</h1>
+
+    <div id="success"></div>
+    <div id="error"></div>
+
+    <form id="addForm">
+        <h3>Añadir Nuevo Repuesto</h3>
+        <input type="text" id="addReferencia" placeholder="Referencia" required>
+        <input type="text" id="addDescripcion" placeholder="Descripción" required>
+        <input type="text" id="addMaquina" placeholder="Máquina" required>
+        <input type="text" id="addGrupo" placeholder="Grupo" required>
+        <input type="text" id="addComentario" placeholder="Comentario" required>
+        <input type="number" id="addCantidad" placeholder="Cantidad" required>
+        <button type="button" onclick="crearRepuesto()">Añadir Repuesto</button>
+    </form>
+
+    <input type="text" id="searchInput" placeholder="Buscar repuestos...">
+
+    <table id="partsTable">
+        <thead>
+            <tr>
+                <th>Referencia</th>
+                <th>Descripción</th>
+                <th>Máquina</th>
+                <th>Grupo</th>
+                <th>Comentario</th>
+                <th>Cantidad</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Las filas de los repuestos serán generadas dinámicamente aquí -->
+        </tbody>
+    </table>
+
     <script src="scripts.js"></script>
 </body>
 </html>
