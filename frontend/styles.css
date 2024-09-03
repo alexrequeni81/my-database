@@ -20,7 +20,7 @@ h1 {
 
 form {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 10px;
     margin-bottom: 20px;
 }
