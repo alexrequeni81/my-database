@@ -55,15 +55,20 @@ app.get('/api/parts', async (req, res) => {
     const skip = (page - 1) * limit;
     const searchQuery = req.query.search || '';
 
-    const query = searchQuery
+    // Dividir la consulta de búsqueda en palabras clave
+    const searchTerms = searchQuery.split(' ').filter(term => term); // Eliminar espacios en blanco
+
+    const query = searchTerms.length > 0 
         ? {
-            $or: [
-                { REFERENCIA: { $regex: searchQuery, $options: 'i' } },
-                { DESCRIPCIÓN: { $regex: searchQuery, $options: 'i' } },
-                { MÁQUINA: { $regex: searchQuery, $options: 'i' } },
-                { GRUPO: { $regex: searchQuery, $options: 'i' } },
-                { COMENTARIO: { $regex: searchQuery, $options: 'i' } }
-            ]
+            $and: searchTerms.map(term => ({
+                $or: [
+                    { REFERENCIA: { $regex: term, $options: 'i' } },
+                    { DESCRIPCIÓN: { $regex: term, $options: 'i' } },
+                    { MÁQUINA: { $regex: term, $options: 'i' } },
+                    { GRUPO: { $regex: term, $options: 'i' } },
+                    { COMENTARIO: { $regex: term, $options: 'i' } }
+                ]
+            }))
         }
         : {};
 
@@ -82,6 +87,7 @@ app.get('/api/parts', async (req, res) => {
         res.status(500).send('Error al obtener los repuestos');
     }
 });
+
 
 // Crear un nuevo repuesto
 app.post('/api/parts', async (req, res) => {
