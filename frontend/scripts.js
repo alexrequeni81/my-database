@@ -51,21 +51,33 @@ function crearRepuesto() {
                      ? parseInt(document.getElementById('addCantidad').value.trim(), 10) 
                      : undefined;
 
+    // Crear el objeto solo con los campos que tienen valor
+    const partData = {};
+    if (referencia) partData.referencia = referencia;
+    if (descripcion) partData.descripcion = descripcion;
+    if (maquina) partData.maquina = maquina;
+    if (grupo) partData.grupo = grupo;
+    if (comentario) partData.comentario = comentario;
+    if (cantidad !== undefined) partData.cantidad = cantidad;
+
     const method = isEditing ? 'PUT' : 'POST';
     const url = isEditing ? `/api/parts/${editingId}` : '/api/parts';
 
     fetch(url, {
         method: method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ referencia, descripcion, maquina, grupo, comentario, cantidad })
+        body: JSON.stringify(partData)
     })
-    .then(() => {
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error en la solicitud');
+        }
         const message = isEditing ? 'Repuesto editado correctamente' : 'Repuesto añadido correctamente';
         mostrarExito(message);
         cargarDatos(currentPage);
         cancelarEdicion();
     })
-    .catch(error => mostrarError('Error al guardar el repuesto.'));
+    .catch(error => mostrarError(`Error al ${isEditing ? 'editar' : 'guardar'} el repuesto.`));
 }
 
 function editarRepuesto(id) {
