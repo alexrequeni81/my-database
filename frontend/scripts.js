@@ -18,12 +18,12 @@ function cargarDatos(page = 1, search = '') {
                     const row = document.createElement('tr');
                     row.setAttribute('data-id', part._id);
                     row.innerHTML = `
-                        <td>${part.REFERENCIA || ''}</td>
-                        <td>${part.DESCRIPCIÓN || ''}</td>
-                        <td>${part.MÁQUINA || ''}</td>
-                        <td>${part.GRUPO || ''}</td>
-                        <td>${part.COMENTARIO || ''}</td>
-                        <td>${part.CANTIDAD || ''}</td>
+                        <td>${part.REFERENCIA}</td>
+                        <td>${part.DESCRIPCIÓN}</td>
+                        <td>${part.MÁQUINA}</td>
+                        <td>${part.GRUPO}</td>
+                        <td>${part.COMENTARIO}</td>
+                        <td>${part.CANTIDAD}</td>
                         <td class="action-buttons">
                             <button class="edit-button" onclick="editarRepuesto('${part._id}')">✏️</button>
                             <button class="delete-button" onclick="eliminarRepuesto('${part._id}')">🗑️</button>
@@ -47,21 +47,25 @@ function crearRepuesto() {
     const maquina = document.getElementById('addMaquina').value.trim();
     const grupo = document.getElementById('addGrupo').value.trim();
     const comentario = document.getElementById('addComentario').value.trim();
-    const cantidad = document.getElementById('addCantidad').value.trim() !== '' 
-                     ? parseInt(document.getElementById('addCantidad').value.trim(), 10) 
-                     : undefined;
+    const cantidad = parseInt(document.getElementById('addCantidad').value.trim(), 10);
 
-    // Crear el objeto solo con los campos que tienen valor
-    const partData = {};
-    if (referencia) partData.referencia = referencia;
-    if (descripcion) partData.descripcion = descripcion;
-    if (maquina) partData.maquina = maquina;
-    if (grupo) partData.grupo = grupo;
-    if (comentario) partData.comentario = comentario;
-    if (cantidad !== undefined) partData.cantidad = cantidad;
+    // Asegurarse de que todos los campos estén completos
+    if (!referencia || !descripcion || !maquina || !grupo || !comentario || isNaN(cantidad)) {
+        mostrarError('Todos los campos son obligatorios');
+        return;
+    }
+
+    const partData = {
+        referencia,
+        descripcion,
+        maquina,
+        grupo,
+        comentario,
+        cantidad
+    };
 
     const method = isEditing ? 'PUT' : 'POST';
-    const url = isEditing ? `/api/parts/${editingId}` : '/api/parts';
+    const url = isEditing ? `/api/parts/${editingId}` : '/api/parts`;
 
     fetch(url, {
         method: method,
