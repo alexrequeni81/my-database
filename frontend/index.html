@@ -27,13 +27,14 @@
             </tbody>
         </table>
         <form id="addPartForm">
-            <input type="text" id="addReferencia" placeholder="Referencia" required>
-            <input type="text" id="addDescripcion" placeholder="Descripción" required>
-            <input type="text" id="addMaquina" placeholder="Máquina" required>
-            <input type="text" id="addGrupo" placeholder="Grupo" required>
-            <input type="text" id="addComentario" placeholder="Comentario" required>
-            <input type="number" id="addCantidad" placeholder="Cantidad" required>
-            <button type="button" onclick="crearRepuesto()">Añadir</button>
+            <input type="text" id="addReferencia" placeholder="Referencia">
+            <input type="text" id="addDescripcion" placeholder="Descripción">
+            <input type="text" id="addMaquina" placeholder="Máquina">
+            <input type="text" id="addGrupo" placeholder="Grupo">
+            <input type="text" id="addComentario" placeholder="Comentario">
+            <input type="number" id="addCantidad" placeholder="Cantidad">
+            <button type="button" id="saveButton" onclick="crearRepuesto()">Añadir</button>
+            <button type="button" id="cancelButton" onclick="cancelarEdicion()" style="display: none;">Cancelar</button>
         </form>
         <div id="error" class="alert" style="display: none;"></div>
         <div id="success" class="alert" style="display: none;"></div>
