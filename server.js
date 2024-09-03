@@ -86,15 +86,12 @@ app.get('/api/parts', async (req, res) => {
 // Crear un nuevo repuesto
 app.post('/api/parts', async (req, res) => {
     try {
-        // Asegúrate de que los datos recibidos son correctos
         const { referencia, descripcion, maquina, grupo, comentario, cantidad } = req.body;
 
-        // Validar que todos los campos están presentes
         if (!referencia || !descripcion || !maquina || !grupo || !comentario || !cantidad) {
             return res.status(400).json({ error: 'Todos los campos son requeridos' });
         }
 
-        // Crear un nuevo documento con los datos recibidos
         const newPart = new Part({
             REFERENCIA: referencia,
             DESCRIPCIÓN: descripcion,
@@ -104,10 +101,8 @@ app.post('/api/parts', async (req, res) => {
             CANTIDAD: cantidad
         });
 
-        // Guardar en la base de datos
         await newPart.save();
 
-        // Responder con un éxito si todo salió bien
         res.status(201).json({
             message: 'Repuesto creado con éxito',
             part: newPart
