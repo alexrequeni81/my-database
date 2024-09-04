@@ -18,12 +18,12 @@ function cargarDatos(page = 1, search = '') {
                     const row = document.createElement('tr');
                     row.setAttribute('data-id', part._id);
                     row.innerHTML = `
-                        <td>${part.REFERENCIA}</td>
-                        <td>${part.DESCRIPCIÓN}</td>
-                        <td>${part.MÁQUINA}</td>
-                        <td>${part.GRUPO}</td>
-                        <td>${part.COMENTARIO}</td>
-                        <td>${part.CANTIDAD}</td>
+                        <td>${part.REFERENCIA || ''}</td>
+                        <td>${part.DESCRIPCIÓN || ''}</td>
+                        <td>${part.MÁQUINA || ''}</td>
+                        <td>${part.GRUPO || ''}</td>
+                        <td>${part.COMENTARIO || ''}</td>
+                        <td>${part.CANTIDAD !== undefined && part.CANTIDAD !== null ? part.CANTIDAD : ''}</td>
                         <td class="action-buttons">
                             <button class="edit-button" onclick="editarRepuesto('${part._id}')">✏️</button>
                             <button class="delete-button" onclick="eliminarRepuesto('${part._id}')">🗑️</button>
@@ -47,11 +47,12 @@ function crearRepuesto() {
     const maquina = document.getElementById('addMaquina').value.trim();
     const grupo = document.getElementById('addGrupo').value.trim();
     const comentario = document.getElementById('addComentario').value.trim();
-    const cantidad = parseInt(document.getElementById('addCantidad').value.trim(), 10);
+    const cantidadValue = document.getElementById('addCantidad').value.trim();
+    const cantidad = cantidadValue !== '' ? parseInt(cantidadValue, 10) : undefined;
 
-    // Asegurarse de que todos los campos estén completos
-    if (!referencia || !descripcion || !maquina || !grupo || !comentario || isNaN(cantidad)) {
-        mostrarError('Todos los campos son obligatorios');
+    // Aceptar cantidad cero si es necesario
+    if (!referencia || !descripcion || !maquina || !grupo || !comentario || (isNaN(cantidad) && cantidad !== undefined)) {
+        mostrarError('Todos los campos son obligatorios y la cantidad debe ser un número.');
         return;
     }
 
@@ -61,11 +62,11 @@ function crearRepuesto() {
         maquina,
         grupo,
         comentario,
-        cantidad
+        cantidad: cantidad !== undefined ? cantidad : null
     };
 
     const method = isEditing ? 'PUT' : 'POST';
-    const url = isEditing ? `/api/parts/${editingId}` : '/api/parts';
+    const url = isEditing ? `/api/parts/${editingId}` : '/api/parts`;
 
     fetch(url, {
         method: method,
@@ -93,7 +94,8 @@ function editarRepuesto(id) {
     document.getElementById('addMaquina').value = cells[2].textContent;
     document.getElementById('addGrupo').value = cells[3].textContent;
     document.getElementById('addComentario').value = cells[4].textContent;
-    document.getElementById('addCantidad').value = cells[5].textContent;
+    const cantidad = cells[5].textContent;
+    document.getElementById('addCantidad').value = cantidad !== '' ? parseInt(cantidad, 10) : '';
 
     isEditing = true;
     editingId = id;
