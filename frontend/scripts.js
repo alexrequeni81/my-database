@@ -66,6 +66,13 @@ function crearRepuesto() {
     };
 
     const method = isEditing ? 'PUT' : 'POST';
+
+    // Verificación adicional para evitar errores
+    if (isEditing && !editingId) {
+        mostrarError('No se puede editar el registro porque falta el ID.');
+        return;
+    }
+
     const url = isEditing ? `/api/parts/${editingId}` : '/api/parts';
 
     fetch(url, {
@@ -98,7 +105,7 @@ function editarRepuesto(id) {
     document.getElementById('addCantidad').value = cantidad !== '' ? parseInt(cantidad, 10) : '';
 
     isEditing = true;
-    editingId = id;
+    editingId = id; // Aseguramos que editingId se asigna correctamente
     document.getElementById('saveButton').textContent = 'Guardar';
     document.getElementById('cancelButton').style.display = 'inline-block';
 }
