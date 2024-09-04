@@ -1,23 +1,3 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 20px;
-    text-align: center;
-}
-
-h1 {
-    color: #333;
-}
-
-#searchInput {
-    margin: 20px 0;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    width: 50%;
-}
-
 form {
     display: flex;
     flex-wrap: nowrap;
@@ -26,7 +6,7 @@ form {
     justify-content: center;
 }
 
-form input {
+form input, form button {
     padding: 8px;
     border-radius: 5px;
     border: 1px solid #ccc;
@@ -38,21 +18,17 @@ form input#addMaquina, form input#addGrupo, form input#addCantidad {
     width: 12%;
 }
 
-form button {
-    padding: 8px 12px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
+#addButton, #cancelButton {
     width: auto;
     margin-top: 10px;
 }
 
-#saveButton {
+#addButton {
     background-color: #28a745;
     color: white;
 }
 
-#saveButton:hover {
+#addButton:hover {
     background-color: #218838;
 }
 
@@ -64,76 +40,4 @@ form button {
 
 #cancelButton:hover {
     background-color: #c82333;
-}
-
-table {
-    width: 100%;
-    margin-top: 20px;
-    border-collapse: collapse;
-}
-
-th, td {
-    padding: 10px;
-    border: 1px solid #ddd;
-    text-align: left;
-}
-
-th {
-    background-color: #007bff;
-    color: white;
-}
-
-tr:hover {
-    background-color: #f1f1f1;
-}
-
-table .action-buttons {
-    display: flex;
-    gap: 5px;
-    justify-content: center;
-}
-
-table .action-buttons button {
-    padding: 5px;
-    border-radius: 50%;
-    border: none;
-    cursor: pointer;
-}
-
-table .edit-button {
-    background-color: #ffc107;
-    color: white;
-}
-
-table .edit-button:hover {
-    background-color: #e0a800;
-}
-
-table .delete-button {
-    background-color: #dc3545;
-    color: white;
-}
-
-table .delete-button:hover {
-    background-color: #c82333;
-}
-
-.alert {
-    margin-top: 10px;
-    padding: 10px;
-    border-radius: 5px;
-    text-align: center;
-    display: none;
-}
-
-#success {
-    background-color: #d4edda;
-    color: #155724;
-    border-color: #c3e6cb;
-}
-
-#error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border-color: #f5c6cb;
 }
