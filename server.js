@@ -57,8 +57,7 @@ app.get('/api/parts', async (req, res) => {
     const skip = (page - 1) * limit;
     const searchQuery = req.query.search || '';
 
-    // Dividir la consulta de búsqueda en palabras clave
-    const searchTerms = searchQuery.split(' ').filter(term => term); // Eliminar espacios en blanco
+    const searchTerms = searchQuery.split(' ').filter(term => term);
 
     const query = searchTerms.length > 0 
         ? {
@@ -90,19 +89,15 @@ app.get('/api/parts', async (req, res) => {
     }
 });
 
-
 // Crear un nuevo repuesto
 app.post('/api/parts', async (req, res) => {
     try {
-        // Asegúrate de que los datos recibidos son correctos
         const { referencia, descripcion, maquina, grupo, comentario, cantidad } = req.body;
 
-        // Validar que todos los campos están presentes
-        if (!referencia || !descripcion || !maquina || !grupo || !comentario || !cantidad) {
-            return res.status(400).json({ error: 'Todos los campos son requeridos' });
+        if (!referencia || !descripcion || !maquina || !grupo || !comentario || isNaN(cantidad)) {
+            return res.status(400).json({ error: 'Todos los campos son obligatorios y la cantidad debe ser un número.' });
         }
 
-        // Crear un nuevo documento con los datos recibidos
         const newPart = new Part({
             REFERENCIA: referencia,
             DESCRIPCIÓN: descripcion,
@@ -112,10 +107,8 @@ app.post('/api/parts', async (req, res) => {
             CANTIDAD: cantidad
         });
 
-        // Guardar en la base de datos
         await newPart.save();
 
-        // Responder con un éxito si todo salió bien
         res.status(201).json({
             message: 'Repuesto creado con éxito',
             part: newPart
@@ -126,16 +119,43 @@ app.post('/api/parts', async (req, res) => {
     }
 });
 
-// Actualizar un repuesto existente
+// Actualizar un repuesto existente (API PUT con Logs)
 app.put('/api/parts/:id', async (req, res) => {
     try {
-        const updatedPart = await Part.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const id = req.params.id;
+        console.log(`Editando repuesto con ID: ${id}`); // Log del ID recibido
+
+        const { referencia, descripcion, maquina, grupo, comentario, cantidad } = req.body;
+        console.log('Datos recibidos:', { referencia, descripcion, maquina, grupo, comentario, cantidad }); // Log de los datos recibidos
+
+        if (!id) {
+            console.error('ID no proporcionada');
+            return res.status(400).json({ error: 'ID no proporcionada' });
+        }
+
+        if (!referencia || !descripcion || !maquina || !grupo || !comentario || isNaN(cantidad)) {
+            console.error('Datos inválidos');
+            return res.status(400).json({ error: 'Todos los campos son obligatorios y la cantidad debe ser un número.' });
+        }
+
+        const updatedPart = await Part.findByIdAndUpdate(id, {
+            REFERENCIA: referencia,
+            DESCRIPCIÓN: descripcion,
+            MÁQUINA: maquina,
+            GRUPO: grupo,
+            COMENTARIO: comentario,
+            CANTIDAD: cantidad
+        }, { new: true });
+
         if (!updatedPart) {
+            console.error('Repuesto no encontrado');
             return res.status(404).json({ error: 'Repuesto no encontrado' });
         }
+
+        console.log('Repuesto actualizado:', updatedPart); // Log del repuesto actualizado
         res.status(200).json(updatedPart);
     } catch (err) {
-        console.error('Error al actualizar el repuesto:', err);
+        console.error('Error al editar el repuesto:', err);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
@@ -156,9 +176,9 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 });
 
-// Cron job para hacer ping cada 5 minutos 
+// Cron job para hacer ping cada 5 minutos
 cron.schedule('*/1 * * * *', () => { 
-    axios.get('https://my-database-ahys.onrender.com/') // Cambia por tu dominio en Render 
+    axios.get('https://my-database-ahys.onrender.com/') 
         .then(() => console.log('Ping exitoso, el servidor sigue activo')) 
         .catch(err => console.error('Error al hacer ping:', err)); 
 });
