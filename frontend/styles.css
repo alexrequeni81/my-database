@@ -45,6 +45,7 @@ form button {
     cursor: pointer;
     width: auto;
     margin-top: 10px;
+    background-color: #218838;
 }
 
 #saveButton {
