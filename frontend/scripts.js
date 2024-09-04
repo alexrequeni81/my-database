@@ -50,7 +50,6 @@ function crearRepuesto() {
     const cantidadValue = document.getElementById('addCantidad').value.trim();
     const cantidad = cantidadValue !== '' ? parseInt(cantidadValue, 10) : undefined;
 
-    // Aceptar cantidad cero si es necesario
     if (!referencia || !descripcion || !maquina || !grupo || !comentario || (isNaN(cantidad) && cantidad !== undefined)) {
         mostrarError('Todos los campos son obligatorios y la cantidad debe ser un número.');
         return;
@@ -104,7 +103,7 @@ function editarRepuesto(id) {
     document.getElementById('addCantidad').value = cantidad !== '' ? parseInt(cantidad, 10) : '';
 
     isEditing = true;
-    editingId = id;
+    editingId = id; // Asignamos correctamente el ID del registro a editar
     document.getElementById('addButton').textContent = 'Añadir'; // Unificado a "Añadir"
     document.getElementById('cancelButton').style.display = 'inline-block';
 }
