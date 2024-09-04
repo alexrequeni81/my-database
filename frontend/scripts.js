@@ -66,7 +66,7 @@ function crearRepuesto() {
     };
 
     const method = isEditing ? 'PUT' : 'POST';
-    const url = isEditing ? `/api/parts/${editingId}` : '/api/parts`;
+    const url = isEditing ? `/api/parts/${editingId}` : '/api/parts';
 
     fetch(url, {
         method: method,
