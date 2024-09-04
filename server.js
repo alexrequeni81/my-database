@@ -119,14 +119,19 @@ app.post('/api/parts', async (req, res) => {
     }
 });
 
-// Actualizar un repuesto existente (API PUT con Logs)
+// Actualizar un repuesto existente (API PUT con Logs y Normalización)
 app.put('/api/parts/:id', async (req, res) => {
     try {
         const id = req.params.id;
         console.log(`Editando repuesto con ID: ${id}`); // Log del ID recibido
 
-        const { referencia, descripcion, maquina, grupo, comentario, cantidad } = req.body;
-        console.log('Datos recibidos:', { referencia, descripcion, maquina, grupo, comentario, cantidad }); // Log de los datos recibidos
+        // Validación y normalización de los datos recibidos
+        let { referencia, descripcion, maquina, grupo, comentario, cantidad } = req.body;
+
+        console.log('Datos recibidos antes de la normalización:', { referencia, descripcion, maquina, grupo, comentario, cantidad });
+
+        // Convertir "cantidad" a número si es necesario y normalizar cadenas vacías
+        cantidad = cantidad !== undefined && cantidad !== null ? (cantidad === "" ? null : Number(cantidad)) : null;
 
         if (!id) {
             console.error('ID no proporcionada');
@@ -137,6 +142,15 @@ app.put('/api/parts/:id', async (req, res) => {
             console.error('Datos inválidos');
             return res.status(400).json({ error: 'Todos los campos son obligatorios y la cantidad debe ser un número.' });
         }
+
+        // Normalizar campos vacíos a null
+        referencia = referencia.trim() || null;
+        descripcion = descripcion.trim() || null;
+        maquina = maquina.trim() || null;
+        grupo = grupo.trim() || null;
+        comentario = comentario.trim() || null;
+
+        console.log('Datos después de la normalización:', { referencia, descripcion, maquina, grupo, comentario, cantidad });
 
         const updatedPart = await Part.findByIdAndUpdate(id, {
             REFERENCIA: referencia,
