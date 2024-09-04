@@ -67,7 +67,6 @@ function crearRepuesto() {
 
     const method = isEditing ? 'PUT' : 'POST';
 
-    // Verificación adicional para evitar errores
     if (isEditing && !editingId) {
         mostrarError('No se puede editar el registro porque falta el ID.');
         return;
@@ -105,8 +104,8 @@ function editarRepuesto(id) {
     document.getElementById('addCantidad').value = cantidad !== '' ? parseInt(cantidad, 10) : '';
 
     isEditing = true;
-    editingId = id; // Aseguramos que editingId se asigna correctamente
-    document.getElementById('saveButton').textContent = 'Guardar';
+    editingId = id;
+    document.getElementById('addButton').textContent = 'Añadir'; // Unificado a "Añadir"
     document.getElementById('cancelButton').style.display = 'inline-block';
 }
 
@@ -114,7 +113,7 @@ function cancelarEdicion() {
     isEditing = false;
     editingId = null;
     document.getElementById('addPartForm').reset();
-    document.getElementById('saveButton').textContent = 'Añadir';
+    document.getElementById('addButton').textContent = 'Añadir'; // Mantiene "Añadir"
     document.getElementById('cancelButton').style.display = 'none';
 }
 
