@@ -65,12 +65,6 @@ function crearRepuesto() {
     };
 
     const method = isEditing ? 'PUT' : 'POST';
-
-    if (isEditing && !editingId) {
-        mostrarError('No se puede editar el registro porque falta el ID.');
-        return;
-    }
-
     const url = isEditing ? `/api/parts/${editingId}` : '/api/parts';
 
     fetch(url, {
@@ -90,6 +84,17 @@ function crearRepuesto() {
     .catch(error => mostrarError(`Error al ${isEditing ? 'editar' : 'guardar'} el repuesto.`));
 }
 
+function eliminarRepuesto(id) {
+    if (confirm('¿Está seguro de que desea eliminar este repuesto?')) {
+        fetch(`/api/parts/${id}`, { method: 'DELETE' })
+            .then(() => {
+                mostrarExito('Repuesto eliminado correctamente');
+                cargarDatos(currentPage);
+            })
+            .catch(error => mostrarError('Error al eliminar el repuesto.'));
+    }
+}
+
 function editarRepuesto(id) {
     const row = document.querySelector(`tr[data-id="${id}"]`);
     const cells = row.querySelectorAll('td');
@@ -103,9 +108,8 @@ function editarRepuesto(id) {
     document.getElementById('addCantidad').value = cantidad !== '' ? parseInt(cantidad, 10) : '';
 
     isEditing = true;
-    editingId = id; // **Asegúrate de que esta línea se ejecuta y que `id` no es undefined**
-    console.log(`ID del registro a editar: ${editingId}`); // Log para verificar que la ID se asigna correctamente
-    document.getElementById('addButton').textContent = 'Añadir';
+    editingId = id;
+    document.getElementById('addButton').textContent = 'Guardar';
     document.getElementById('cancelButton').style.display = 'inline-block';
 }
 
@@ -113,18 +117,24 @@ function cancelarEdicion() {
     isEditing = false;
     editingId = null;
     document.getElementById('addPartForm').reset();
-    document.getElementById('addButton').textContent = 'Añadir'; // Mantiene "Añadir"
+    document.getElementById('addButton').textContent = 'Añadir';
     document.getElementById('cancelButton').style.display = 'none';
 }
 
-function eliminarRepuesto(id) {
-    if (confirm('¿Está seguro de que desea eliminar este repuesto?')) {
-        fetch(`/api/parts/${id}`, { method: 'DELETE' })
-            .then(() => {
-                mostrarExito('Repuesto eliminado correctamente');
-                cargarDatos(currentPage);
+// Función para resetear todos los repuestos
+function resetearTodos() {
+    if (confirm('¿Está seguro de que desea resetear todos los repuestos?')) {
+        fetch(`/api/resetAllParts`, { method: 'DELETE' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    mostrarExito('Todos los repuestos reseteados correctamente');
+                    cargarDatos(1);
+                } else {
+                    mostrarError('Error al resetear los repuestos');
+                }
             })
-            .catch(error => mostrarError('Error al eliminar el repuesto.'));
+            .catch(error => mostrarError('Error en la solicitud para resetear todos los repuestos.'));
     }
 }
 
