@@ -85,6 +85,14 @@ th {
     color: white;
 }
 
+/* Center content for specific columns */
+td:nth-child(3), /* Columna Máquina */
+td:nth-child(4), /* Columna Grupo */
+td:nth-child(6), /* Columna Cantidad */
+td:nth-child(7) { /* Columna Acciones (botones) */
+    text-align: center; /* Centramos el contenido */
+}
+
 tr:hover {
     background-color: #f1f1f1;
 }
