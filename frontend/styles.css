@@ -1,140 +1,160 @@
+/* General styles */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
     margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
     padding: 20px;
-    text-align: center;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
+    text-align: center;
     color: #333;
 }
 
-#searchInput {
-    margin: 20px 0;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    width: 50%;
-}
-
+/* Form styles */
 form {
     display: flex;
-    flex-wrap: nowrap;
-    gap: 5px;
+    flex-direction: column;
+    gap: 10px;
     margin-bottom: 20px;
-    justify-content: center;
 }
 
-form input {
-    padding: 8px;
-    border-radius: 5px;
+input[type="text"],
+input[type="number"] {
+    padding: 10px;
     border: 1px solid #ccc;
-    width: 18%;
-    box-sizing: border-box;
-}
-
-form input#addMaquina, form input#addGrupo, form input#addCantidad {
-    width: 12%;
-}
-
-form button {
-    padding: 8px 12px;
     border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    width: auto;
-    margin-top: 10px;
-    background-color: #218838;
+    font-size: 16px;
 }
 
-#saveButton {
+button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
     background-color: #28a745;
     color: white;
+    font-size: 16px;
+    cursor: pointer;
 }
 
-#saveButton:hover {
+button:hover {
     background-color: #218838;
 }
 
-#cancelButton {
+button.delete-button {
     background-color: #dc3545;
-    color: white;
-    display: none;
 }
 
-#cancelButton:hover {
+button.delete-button:hover {
     background-color: #c82333;
 }
 
+button.edit-button {
+    background-color: #ffc107;
+    color: black;
+}
+
+button.edit-button:hover {
+    background-color: #e0a800;
+}
+
+/* Table styles */
 table {
     width: 100%;
-    margin-top: 20px;
     border-collapse: collapse;
+    margin-bottom: 20px;
 }
 
 th, td {
     padding: 10px;
     border: 1px solid #ddd;
+    font-size: 16px;
+}
+
+/* Centering table headers */
+th {
+    text-align: center; /* Centra todo el contenido de los encabezados */
+    background-color: #f2f2f2;
+    color: #333;
+}
+
+/* Align left for specific columns */
+td {
     text-align: left;
 }
 
-th {
-    background-color: #007bff;
-    color: white;
+/* Center content for specific columns */
+td:nth-child(3), /* Columna Máquina */
+td:nth-child(4), /* Columna Grupo */
+td:nth-child(6), /* Columna Cantidad */
+td:nth-child(7) { /* Columna Acciones (botones) */
+    text-align: center; /* Centramos el contenido */
 }
 
-tr:hover {
-    background-color: #f1f1f1;
-}
-
-table .action-buttons {
+/* Action buttons styles */
+td .action-buttons {
     display: flex;
-    gap: 5px;
     justify-content: center;
+    gap: 10px;
 }
 
-table .action-buttons button {
-    padding: 5px;
+.action-buttons button {
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
-    border: none;
-    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-table .edit-button {
-    background-color: #ffc107;
-    color: white;
+input[type="text"]:focus,
+input[type="number"]:focus {
+    outline: none;
+    border-color: #80bdff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
-table .edit-button:hover {
-    background-color: #e0a800;
-}
-
-table .delete-button {
-    background-color: #dc3545;
-    color: white;
-}
-
-table .delete-button:hover {
-    background-color: #c82333;
-}
-
-.alert {
-    margin-top: 10px;
+/* Search input */
+#searchInput {
+    margin-bottom: 10px;
     padding: 10px;
+    width: 100%;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    text-align: center;
+    font-size: 16px;
+}
+
+/* Alerts */
+.alert {
     display: none;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    font-size: 16px;
 }
 
-#success {
-    background-color: #d4edda;
-    color: #155724;
-    border-color: #c3e6cb;
-}
-
-#error {
+.alert#error {
     background-color: #f8d7da;
     color: #721c24;
-    border-color: #f5c6cb;
+}
+
+.alert#success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+/* Loader styles */
+#loader {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
 }
