@@ -5,26 +5,9 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const cron = require('node-cron');
 const axios = require('axios');
-const http = require('http');
-const socketIo = require('socket.io');
 
 const app = express();
-const server = http.createServer(app);
-const io = socketIo(server);
 const PORT = process.env.PORT || 3000;
-
-// Conexiones en tiempo real
-let onlineUsers = 0;
-
-io.on('connection', (socket) => {
-    onlineUsers++;
-    io.emit('updateUserCount', onlineUsers);
-
-    socket.on('disconnect', () => {
-        onlineUsers--;
-        io.emit('updateUserCount', onlineUsers);
-    });
-});
 
 // Middleware para logging de las solicitudes
 app.use((req, res, next) => {
@@ -205,16 +188,6 @@ app.delete('/api/parts/:id', async (req, res) => {
 // Servir el archivo 'index.html' en la ruta raíz
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
-});
-
-// Ruta para obtener la cantidad total de referencias
-app.get('/api/countParts', async (req, res) => {
-    try {
-        const totalParts = await Part.countDocuments({});
-        res.json({ totalParts });
-    } catch (err) {
-        res.status(500).send('Error al obtener la cantidad de registros');
-    }
 });
 
 // Cron job para hacer ping cada 5 minutos
