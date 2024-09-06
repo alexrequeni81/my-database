@@ -27,15 +27,6 @@
                 <!-- Los datos se insertarán aquí -->
             </tbody>
         </table>
-        
-        <!-- Paginación -->
-        <div id="pagination">
-            <button id="prevPage" onclick="cambiarPagina(-1)">Anterior</button>
-            <span id="pageInfo">Página 1 de X</span>
-            <button id="nextPage" onclick="cambiarPagina(1)">Siguiente</button>
-        </div>
-
-        <!-- Formulario para añadir/editar repuestos -->
         <form id="addPartForm">
             <input type="text" id="addReferencia" placeholder="Referencia" required>
             <input type="text" id="addDescripcion" placeholder="Descripción" required>
@@ -46,20 +37,10 @@
             <button type="button" id="addButton" onclick="crearRepuesto()">Añadir</button>
             <button type="button" id="cancelButton" onclick="cancelarEdicion()" style="display: none;">Cancelar</button>
         </form>
-        
         <button onclick="resetearTodos()">Resetear Todos</button> <!-- Botón de reseteo masivo -->
-
         <div id="error" class="alert" style="display: none;"></div>
         <div id="success" class="alert" style="display: none;"></div>
     </div>
-
-    <!-- Panel de información -->
-    <div id="infoPanel">
-        <p id="userCount">Online: 0 usuarios</p>
-        <p id="dbCount">Base de datos: 0 referencias</p>
-    </div>
-
-    <script src="/socket.io/socket.io.js"></script>
     <script src="scripts.js"></script>
 </body>
 </html>
