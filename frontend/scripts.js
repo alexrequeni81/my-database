@@ -1,35 +1,9 @@
-// Variables globales para manejar la paginación y el estado de edición
 let currentPage = 1;
 const limit = 10;
 let searchQuery = '';
 let isEditing = false;
 let editingId = null;
 
-// Iniciamos la conexión con Socket.IO para gestionar los usuarios conectados en tiempo real
-const socket = io();
-
-// Escuchar la actualización de usuarios conectados en tiempo real
-socket.on('updateUserCount', (count) => {
-    document.getElementById('userCount').textContent = `Online: ${count} usuarios`;
-});
-
-// Función para obtener el total de registros en la base de datos
-function obtenerTotalRegistros() {
-    fetch('/api/countParts')
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('dbCount').textContent = `Base de datos: ${data.totalParts} referencias`;
-        })
-        .catch(error => console.error('Error al obtener la cantidad de registros:', error));
-}
-
-// Llamar a esta función cuando la página cargue para inicializar datos y mostrar estadísticas
-document.addEventListener('DOMContentLoaded', () => {
-    cargarDatos();  // Cargar los datos de la primera página
-    obtenerTotalRegistros();  // Obtener el número total de registros
-});
-
-// Función para cargar los repuestos con paginación y búsqueda
 function cargarDatos(page = 1, search = '') {
     fetch(`/api/parts?page=${page}&limit=${limit}&search=${search}`)
         .then(response => response.json())
@@ -58,28 +32,15 @@ function cargarDatos(page = 1, search = '') {
                     tableBody.appendChild(row);
                 });
             }
-
-            // Actualizar la información de la página y habilitar/deshabilitar los botones de navegación
-            document.getElementById('pageInfo').textContent = `Página ${page} de ${data.pages}`;
-            document.getElementById('prevPage').disabled = page === 1;
-            document.getElementById('nextPage').disabled = page === data.pages;
         })
         .catch(error => console.error('Error:', error));
 }
 
-// Función para cambiar de página (anterior o siguiente)
-function cambiarPagina(delta) {
-    currentPage += delta;
-    cargarDatos(currentPage, searchQuery);  // Cargar la nueva página
-}
-
-// Función para realizar la búsqueda de repuestos
 function buscarRepuestos() {
     searchQuery = document.getElementById('searchInput').value.trim();
-    cargarDatos(1, searchQuery);  // Reiniciamos a la primera página cuando se hace una búsqueda
+    cargarDatos(1, searchQuery);
 }
 
-// Función para crear o editar un repuesto
 function crearRepuesto() {
     const referencia = document.getElementById('addReferencia').value.trim();
     const descripcion = document.getElementById('addDescripcion').value.trim();
@@ -123,13 +84,12 @@ function crearRepuesto() {
         }
         const message = isEditing ? 'Repuesto editado correctamente' : 'Repuesto añadido correctamente';
         mostrarExito(message);
-        cargarDatos(currentPage);  // Recargar la tabla con los nuevos datos
+        cargarDatos(currentPage);
         cancelarEdicion();
     })
     .catch(error => mostrarError(`Error al ${isEditing ? 'editar' : 'guardar'} el repuesto.`));
 }
 
-// Función para editar un repuesto (rellenar el formulario con los datos del repuesto)
 function editarRepuesto(id) {
     const row = document.querySelector(`tr[data-id="${id}"]`);
     const cells = row.querySelectorAll('td');
@@ -143,27 +103,26 @@ function editarRepuesto(id) {
     document.getElementById('addCantidad').value = cantidad !== '' ? parseInt(cantidad, 10) : '';
 
     isEditing = true;
-    editingId = id;
-    document.getElementById('addButton').textContent = 'Guardar';
+    editingId = id; // **Asegúrate de que esta línea se ejecuta y que `id` no es undefined**
+    console.log(`ID del registro a editar: ${editingId}`); // Log para verificar que la ID se asigna correctamente
+    document.getElementById('addButton').textContent = 'Añadir';
     document.getElementById('cancelButton').style.display = 'inline-block';
 }
 
-// Función para cancelar la edición actual y resetear el formulario
 function cancelarEdicion() {
     isEditing = false;
     editingId = null;
     document.getElementById('addPartForm').reset();
-    document.getElementById('addButton').textContent = 'Añadir';  // Volver a mostrar el botón como "Añadir"
+    document.getElementById('addButton').textContent = 'Añadir'; // Mantiene "Añadir"
     document.getElementById('cancelButton').style.display = 'none';
 }
 
-// Función para eliminar un repuesto
 function eliminarRepuesto(id) {
     if (confirm('¿Está seguro de que desea eliminar este repuesto?')) {
         fetch(`/api/parts/${id}`, { method: 'DELETE' })
             .then(() => {
                 mostrarExito('Repuesto eliminado correctamente');
-                cargarDatos(currentPage);  // Recargar la página actual después de eliminar el repuesto
+                cargarDatos(currentPage);
             })
             .catch(error => mostrarError('Error al eliminar el repuesto.'));
     }
@@ -177,7 +136,7 @@ function resetearTodos() {
             .then(data => {
                 if (data.success) {
                     mostrarExito('Todos los repuestos reseteados correctamente');
-                    cargarDatos(1);  // Recargar la tabla desde la primera página después de resetear
+                    cargarDatos(1);
                 } else {
                     mostrarError('Error al resetear los repuestos');
                 }
@@ -186,7 +145,6 @@ function resetearTodos() {
     }
 }
 
-// Función para mostrar mensajes de éxito
 function mostrarExito(mensaje) {
     const successDiv = document.getElementById('success');
     successDiv.innerText = mensaje;
@@ -194,10 +152,11 @@ function mostrarExito(mensaje) {
     setTimeout(() => successDiv.style.display = 'none', 3000);
 }
 
-// Función para mostrar mensajes de error
 function mostrarError(mensaje) {
     const errorDiv = document.getElementById('error');
     errorDiv.innerText = mensaje;
     errorDiv.style.display = 'block';
     setTimeout(() => errorDiv.style.display = 'none', 5000);
 }
+
+document.addEventListener('DOMContentLoaded', () => cargarDatos());
