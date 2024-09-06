@@ -145,6 +145,51 @@ function resetearTodos() {
     }
 }
 
+function crearBotonesPaginacion(totalPages, currentPage) {
+    const paginationControls = document.getElementById('paginationControls');
+    paginationControls.innerHTML = '';
+
+    for (let i = 1; i <= totalPages; i++) {
+        const button = document.createElement('button');
+        button.textContent = i;
+        button.disabled = i === currentPage; // Disable the current page button
+        button.onclick = () => cargarDatos(i, searchQuery);
+        paginationControls.appendChild(button);
+    }
+}
+
+// Modify cargarDatos to receive totalPages and call crearBotonesPaginacion
+function cargarDatos(page = 1, search = '') {
+    fetch(`/api/parts?page=${page}&limit=${limit}&search=${search}`)
+        .then(response => response.json())
+        .then(data => {
+            // Load table data...
+            // Existing logic for loading data goes here...
+
+            // Call pagination button creation
+            crearBotonesPaginacion(data.pages, data.page);
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+// Socket.IO setup to track connected users
+const socket = io(); // Assuming socket.io is connected
+
+// Receive user count from the server
+socket.on('userCount', (count) => {
+    document.getElementById('userCount').textContent = count;
+});
+
+// Fetch the total number of records in the database
+function actualizarDBCount() {
+    fetch('/api/parts/count')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('dbCount').textContent = data.count;
+        })
+        .catch(error => console.error('Error al obtener el conteo de la base de datos:', error));
+}
+
 function mostrarExito(mensaje) {
     const successDiv = document.getElementById('success');
     successDiv.innerText = mensaje;
@@ -159,4 +204,6 @@ function mostrarError(mensaje) {
     setTimeout(() => errorDiv.style.display = 'none', 5000);
 }
 
-document.addEventListener('DOMContentLoaded', () => cargarDatos());
+document.addEventListener('DOMContentLoaded', () => {
+    cargarDatos(); // Existing function
+    actualizarDBCount(); // New function to fetch DB count
