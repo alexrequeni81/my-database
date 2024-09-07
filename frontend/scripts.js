@@ -191,3 +191,69 @@ function loadPreviousPage() {
 }
 
 document.addEventListener('DOMContentLoaded', () => cargarDatos());
+
+// Código Javascript para la funcionalidad de la tabla acordeón
+const tableRows = document.querySelectorAll('#partsTable tbody tr');
+
+tableRows.forEach(row => {
+  // Agrega un botón "+" al final de cada fila
+  const expandButton = document.createElement('button');
+  expandButton.textContent = '+';
+  expandButton.classList.add('expand-button');
+  row.appendChild(expandButton);
+
+  expandButton.addEventListener('click', () => {
+    // Encuentra las celdas de la fila actual
+    const cells = row.querySelectorAll('td');
+
+    // Despliega las celdas ocultas
+    cells.forEach((cell, index) => {
+      if (index > 0) { // Excluye la primera columna
+        cell.classList.remove('hidden');
+        cell.classList.add('show');
+      }
+    });
+
+    // Cambia el texto del botón a "-"
+    expandButton.textContent = '-';
+    expandButton.removeEventListener('click', this); // Evita que se agregue un nuevo listener
+    expandButton.addEventListener('click', () => {
+      // Ocultar las celdas
+      cells.forEach((cell, index) => {
+        if (index > 0) { // Excluye la primera columna
+          cell.classList.remove('show');
+          cell.classList.add('hidden');
+        }
+      });
+
+      // Cambia el texto del botón a "+"
+      expandButton.textContent = '+';
+      expandButton.removeEventListener('click', this); // Evita que se agregue un nuevo listener
+      expandButton.addEventListener('click', () => {
+        // Despliega las celdas ocultas
+        cells.forEach((cell, index) => {
+          if (index > 0) { // Excluye la primera columna
+            cell.classList.remove('hidden');
+            cell.classList.add('show');
+          }
+        });
+
+        // Cambia el texto del botón a "-"
+        expandButton.textContent = '-';
+        expandButton.removeEventListener('click', this); // Evita que se agregue un nuevo listener
+        expandButton.addEventListener('click', () => {
+          // Ocultar las celdas
+          cells.forEach((cell, index) => {
+            if (index > 0) { // Excluye la primera columna
+              cell.classList.remove('show');
+              cell.classList.add('hidden');
+            }
+          });
+
+          // Cambia el texto del botón a "+"
+          expandButton.textContent = '+';
+        });
+      });
+    });
+  });
+});
