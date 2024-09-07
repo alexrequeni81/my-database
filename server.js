@@ -47,17 +47,6 @@ const partSchema = new mongoose.Schema({
 
 const Part = mongoose.model('Part', partSchema, 'databasev1');
 
-// User Counter Collection
-const userCounterSchema = new mongoose.Schema({ count: { type: Number, default: 0 } });
-const UserCounter = mongoose.model('UserCounter', userCounterSchema);
-
-// Server Status
-let serverStatus = 'online'; 
-
-// Database Size
-let databaseSize = 0;
-Part.countDocuments().then(count => databaseSize = count);
-
 // Configurar la carpeta de archivos estáticos
 app.use(express.static(path.join(__dirname, 'frontend')));
 
@@ -233,15 +222,6 @@ app.delete('/api/resetAllParts', async (req, res) => {
     } catch (err) {
         res.status(500).json({ success: false, message: 'Error interno del servidor' });
     }
-});
-
-// API Endpoint for Status Data
-app.get('/api/status', async (req, res) => {
-    res.json({
-        serverStatus: serverStatus,
-        userCount: await UserCounter.findOne().then(doc => doc ? doc.count : 0), // Fetch user count from collection
-        databaseSize: databaseSize
-    });
 });
 
 // Iniciar el servidor
