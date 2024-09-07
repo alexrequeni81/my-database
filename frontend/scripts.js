@@ -190,8 +190,6 @@ function loadPreviousPage() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => cargarDatos());
-
 // Código Javascript para la funcionalidad de la tabla acordeón
 const tableRows = document.querySelectorAll('#partsTable tbody tr');
 
@@ -257,3 +255,5 @@ tableRows.forEach(row => {
     });
   });
 });
+
+document.addEventListener('DOMContentLoaded', () => cargarDatos());
