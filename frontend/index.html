@@ -27,10 +27,6 @@
                 <!-- Los datos se insertarán aquí -->
             </tbody>
         </table>
-        <!-- Pagination Controls -->
-        <div id="paginationControls">
-        <!-- Pagination buttons will be added dynamically -->
-        </div>
         <form id="addPartForm">
             <input type="text" id="addReferencia" placeholder="Referencia" required>
             <input type="text" id="addDescripcion" placeholder="Descripción" required>
@@ -41,15 +37,9 @@
             <button type="button" id="addButton" onclick="crearRepuesto()">Añadir</button>
             <button type="button" id="cancelButton" onclick="cancelarEdicion()" style="display: none;">Cancelar</button>
         </form>
-        <!-- Sidebar for User and Database Info -->
-        <div id="sidebarInfo">
-        <p>Usuarios Conectados: <span id="userCount">0</span> 🧑‍💻</p>
-        <p>Referencias en la Base de Datos: <span id="dbCount">0</span> 📄</p>
-        </div>
         <button onclick="resetearTodos()">Resetear Todos</button> <!-- Botón de reseteo masivo -->
         <div id="error" class="alert" style="display: none;"></div>
         <div id="success" class="alert" style="display: none;"></div>
     </div>
     <script src="scripts.js"></script>
 </body>
-</html>
