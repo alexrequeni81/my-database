@@ -27,6 +27,12 @@
                 <!-- Los datos se insertarán aquí -->
             </tbody>
         </table>
+        <!-- Pagination Buttons -->
+        <div class="pagination">
+            <button id="prevButton" onclick="loadPreviousPage()" disabled>Anterior</button>
+            <span id="currentPage">1</span>
+            <button id="nextButton" onclick="loadNextPage()">Siguiente</button>
+        </div>
         <form id="addPartForm">
             <input type="text" id="addReferencia" placeholder="Referencia" required>
             <input type="text" id="addDescripcion" placeholder="Descripción" required>
@@ -37,21 +43,9 @@
             <button type="button" id="addButton" onclick="crearRepuesto()">Añadir</button>
             <button type="button" id="cancelButton" onclick="cancelarEdicion()" style="display: none;">Cancelar</button>
         </form>
-
-        <!-- Pagination Buttons -->
-        <div class="pagination">
-            <button id="prevButton" onclick="loadPreviousPage()" disabled>Anterior</button>
-            <span id="currentPage">1</span>
-            <button id="nextButton" onclick="loadNextPage()">Siguiente</button>
-        </div>
-        
         <button onclick="resetearTodos()">Resetear Todos</button> <!-- Botón de reseteo masivo -->
         <div id="error" class="alert" style="display: none;"></div>
         <div id="success" class="alert" style="display: none;"></div>
-
-        <!-- Status Bar -->
-        <div id="status-bar"></div> 
-
     </div>
     <script src="scripts.js"></script>
 </body>
