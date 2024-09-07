@@ -32,6 +32,25 @@ function cargarDatos(page = 1, search = '') {
                     tableBody.appendChild(row);
                 });
             }
+
+            // Update pagination buttons based on data.pages
+            const prevButton = document.getElementById('prevButton');
+            const nextButton = document.getElementById('nextButton');
+            const currentPageSpan = document.getElementById('currentPage');
+
+            currentPageSpan.textContent = page;
+
+            if (page === 1) {
+                prevButton.disabled = true;
+            } else {
+                prevButton.disabled = false;
+            }
+
+            if (page === data.pages) {
+                nextButton.disabled = true;
+            } else {
+                nextButton.disabled = false;
+            }
         })
         .catch(error => console.error('Error:', error));
 }
@@ -84,7 +103,7 @@ function crearRepuesto() {
         }
         const message = isEditing ? 'Repuesto editado correctamente' : 'Repuesto añadido correctamente';
         mostrarExito(message);
-        cargarDatos(currentPage);
+        cargarDatos(currentPage); // Reload current page
         cancelarEdicion();
     })
     .catch(error => mostrarError(`Error al ${isEditing ? 'editar' : 'guardar'} el repuesto.`));
@@ -122,7 +141,7 @@ function eliminarRepuesto(id) {
         fetch(`/api/parts/${id}`, { method: 'DELETE' })
             .then(() => {
                 mostrarExito('Repuesto eliminado correctamente');
-                cargarDatos(currentPage);
+                cargarDatos(currentPage); // Reload current page
             })
             .catch(error => mostrarError('Error al eliminar el repuesto.'));
     }
@@ -136,7 +155,7 @@ function resetearTodos() {
             .then(data => {
                 if (data.success) {
                     mostrarExito('Todos los repuestos reseteados correctamente');
-                    cargarDatos(1);
+                    cargarDatos(1); // Reload page 1
                 } else {
                     mostrarError('Error al resetear los repuestos');
                 }
@@ -157,6 +176,18 @@ function mostrarError(mensaje) {
     errorDiv.innerText = mensaje;
     errorDiv.style.display = 'block';
     setTimeout(() => errorDiv.style.display = 'none', 5000);
+}
+
+function loadNextPage() {
+  currentPage++;
+  cargarDatos(currentPage, searchQuery);
+}
+
+function loadPreviousPage() {
+  if (currentPage > 1) {
+    currentPage--;
+    cargarDatos(currentPage, searchQuery);
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => cargarDatos());
