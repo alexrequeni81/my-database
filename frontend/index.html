@@ -11,6 +11,7 @@
     <div class="container">
         <h1>SAT - REPUESTOS</h1>
         <input type="text" id="searchInput" placeholder="Buscar repuestos..." onkeyup="buscarRepuestos()">
+
         <table id="partsTable">
             <thead>
                 <tr>
@@ -20,21 +21,19 @@
                     <th>GRUPO</th>
                     <th>COMENTARIO</th>
                     <th>CANTIDAD</th>
-                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Los datos se insertarán aquí -->
+                <!-- Los datos se insertarán aquí dinámicamente -->
             </tbody>
         </table>
-        <!-- Pagination Buttons -->
+        
         <div class="pagination">
             <button id="prevButton" onclick="loadPreviousPage()" disabled>Anterior</button>
             <span id="currentPage">1</span>
             <button id="nextButton" onclick="loadNextPage()">Siguiente</button>
         </div>
-        <div>
-        <h1> </h1>
+
         <form id="addPartForm">
             <input type="text" id="addReferencia" placeholder="Referencia" required>
             <input type="text" id="addDescripcion" placeholder="Descripción" required>
@@ -45,11 +44,11 @@
             <button type="button" id="addButton" onclick="crearRepuesto()">Añadir</button>
             <button type="button" id="cancelButton" onclick="cancelarEdicion()" style="display: none;">Cancelar</button>
         </form>
-        </div>
-        <button onclick="resetearTodos()">Resetear Todos</button> <!-- Botón de reseteo masivo -->
+
         <div id="error" class="alert" style="display: none;"></div>
         <div id="success" class="alert" style="display: none;"></div>
     </div>
+
     <script src="scripts.js"></script>
 </body>
 </html>
