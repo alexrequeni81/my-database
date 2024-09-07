@@ -33,6 +33,7 @@
             <span id="currentPage">1</span>
             <button id="nextButton" onclick="loadNextPage()">Siguiente</button>
         </div>
+        <div>
         <form id="addPartForm">
             <input type="text" id="addReferencia" placeholder="Referencia" required>
             <input type="text" id="addDescripcion" placeholder="Descripción" required>
@@ -43,6 +44,7 @@
             <button type="button" id="addButton" onclick="crearRepuesto()">Añadir</button>
             <button type="button" id="cancelButton" onclick="cancelarEdicion()" style="display: none;">Cancelar</button>
         </form>
+        </div>
         <button onclick="resetearTodos()">Resetear Todos</button> <!-- Botón de reseteo masivo -->
         <div id="error" class="alert" style="display: none;"></div>
         <div id="success" class="alert" style="display: none;"></div>
