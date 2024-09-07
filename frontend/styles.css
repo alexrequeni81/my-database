@@ -169,3 +169,35 @@ table .delete-button:hover {
   background-color: #ccc;
   cursor: default;
 }
+
+/* Estilo para el botón "+" */
+.expand-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2em;
+  /* Agrega más estilos según tu preferencia */
+}
+
+/* Mostrar las columnas al hacer clic en el botón "+" */
+.show {
+  display: table-cell; /* O flex, si la tabla usa flexbox */
+  transition: all 0.3s ease; /* Animación de transición */
+}
+
+/* Ocultar las columnas por defecto */
+.hidden {
+  display: none;
+}
+
+/* Ocultar las columnas por defecto en dispositivos móviles */
+@media (max-width: 768px) { /* Ejemplo de Media Query para pantallas móviles */
+  #partsTable td:nth-child(2),
+  #partsTable td:nth-child(3),
+  #partsTable td:nth-child(4),
+  #partsTable td:nth-child(5),
+  #partsTable td:nth-child(6),
+  #partsTable td:nth-child(7) {
+    display: none; /* Ocultar las columnas */
+  }
+}
