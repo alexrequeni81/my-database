@@ -1,88 +1,88 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 20px;
-    text-align: center;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 20px;
+  text-align: center;
 }
 
 h1 {
-    color: #333;
+  color: #333;
 }
 
 #searchInput {
-    margin: 20px 0;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    width: 50%;
+  margin: 20px 0;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 50%;
 }
 
 form {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 5px;
-    margin-bottom: 20px;
-    justify-content: center;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 5px;
+  margin-bottom: 20px;
+  justify-content: center;
 }
 
 form input {
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    width: 18%;
-    box-sizing: border-box;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 18%;
+  box-sizing: border-box;
 }
 
 form input#addMaquina, form input#addGrupo, form input#addCantidad {
-    width: 12%;
+  width: 12%;
 }
 
 form button {
-    padding: 8px 12px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    width: auto;
-    margin-top: 10px;
-    background-color: #218838;
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  width: auto;
+  margin-top: 10px;
+  background-color: #218838;
 }
 
 #saveButton {
-    background-color: #28a745;
-    color: white;
+  background-color: #28a745;
+  color: white;
 }
 
 #saveButton:hover {
-    background-color: #218838;
+  background-color: #218838;
 }
 
 #cancelButton {
-    background-color: #dc3545;
-    color: white;
-    display: none;
+  background-color: #dc3545;
+  color: white;
+  display: none;
 }
 
 #cancelButton:hover {
-    background-color: #c82333;
+  background-color: #c82333;
 }
 
 table {
-    width: 100%;
-    margin-top: 20px;
-    border-collapse: collapse;
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
 }
 
 th, td {
-    padding: 10px;
-    border: 1px solid #ddd;
-    text-align: left;
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
 }
 
 th {
-    text-align: center; /* Centra todo el contenido de los encabezados */
-    background-color: #007bff;
-    color: white;
+  text-align: center; /* Centra todo el contenido de los encabezados */
+  background-color: #007bff;
+  color: white;
 }
 
 /* Center content for specific columns */
@@ -90,60 +90,82 @@ td:nth-child(3), /* Columna Máquina */
 td:nth-child(4), /* Columna Grupo */
 td:nth-child(6), /* Columna Cantidad */
 td:nth-child(7) { /* Columna Acciones (botones) */
-    text-align: center; /* Centramos el contenido */
+  text-align: center; /* Centramos el contenido */
 }
 
 tr:hover {
-    background-color: #f1f1f1;
+  background-color: #f1f1f1;
 }
 
 table .action-buttons {
-    display: flex;
-    gap: 5px;
-    justify-content: center;
+  display: flex;
+  gap: 5px;
+  justify-content: center;
 }
 
 table .action-buttons button {
-    padding: 5px;
-    border-radius: 50%;
-    border: none;
-    cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
 }
 
 table .edit-button {
-    background-color: #ffc107;
-    color: white;
+  background-color: #ffc107;
+  color: white;
 }
 
 table .edit-button:hover {
-    background-color: #e0a800;
+  background-color: #e0a800;
 }
 
 table .delete-button {
-    background-color: #dc3545;
-    color: white;
+  background-color: #dc3545;
+  color: white;
 }
 
 table .delete-button:hover {
-    background-color: #c82333;
+  background-color: #c82333;
 }
 
 .alert {
-    margin-top: 10px;
-    padding: 10px;
-    border-radius: 5px;
-    text-align: center;
-    display: none;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  display: none;
 }
 
 #success {
-    background-color: #d4edda;
-    color: #155724;
-    border-color: #c3e6cb;
+  background-color: #d4edda;
+  color: #155724;
+  border-color: #c3e6cb;
 }
 
 #error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border-color: #f5c6cb;
+  background-color: #f8d7da;
+  color: #721c24;
+  border-color: #f5c6cb;
+}
+
+/* Pagination Styles */
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.pagination button {
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: default;
 }
