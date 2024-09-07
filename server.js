@@ -54,7 +54,7 @@ app.use(express.static(path.join(__dirname, 'frontend')));
 app.get('/api/parts', async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
+    const skip = (page - 1) * limit; // Calculate the skip value
     const searchQuery = req.query.search || '';
 
     const searchTerms = searchQuery.split(' ').filter(term => term);
@@ -74,14 +74,14 @@ app.get('/api/parts', async (req, res) => {
         : {};
 
     try {
-        const parts = await Part.find(query).skip(skip).limit(limit);
-        const total = await Part.countDocuments(query);
+        const parts = await Part.find(query).skip(skip).limit(limit); // Fetch data with skip and limit
+        const total = await Part.countDocuments(query); // Count total documents for pagination
 
         res.json({
             parts,
             total,
-            page,
-            pages: Math.ceil(total / limit)
+            page, 
+            pages: Math.ceil(total / limit) // Calculate the total number of pages
         });
     } catch (err) {
         console.error('Error al obtener los repuestos:', err);
