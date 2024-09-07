@@ -9,32 +9,6 @@ const axios = require('axios');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const http = require('http').createServer(app);
-const io = require('socket.io')(http);
-
-// Track connected users
-let connectedUsers = 0;
-
-io.on('connection', (socket) => {
-    connectedUsers++;
-    io.emit('userCount', connectedUsers); // Emit the new count to all clients
-
-    socket.on('disconnect', () => {
-        connectedUsers--;
-        io.emit('userCount', connectedUsers); // Emit the new count
-    });
-});
-
-// Add a route to get the total record count
-app.get('/api/parts/count', async (req, res) => {
-    try {
-        const count = await Part.countDocuments();
-        res.json({ count });
-    } catch (error) {
-        res.status(500).json({ error: 'Error al obtener el conteo de la base de datos' });
-    }
-});
-
 // Middleware para logging de las solicitudes
 app.use((req, res, next) => {
     console.log(`Request URL: ${req.url}`);
