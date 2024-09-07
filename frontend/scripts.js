@@ -190,4 +190,21 @@ function loadPreviousPage() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => cargarDatos());
+function updateStatusBar() {
+  fetch('/api/status')
+    .then(response => response.json())
+    .then(data => {
+      let serverIcon = data.serverStatus === 'online' ? '🟢' : '🔴';
+      let statusText = `[Servidor ${serverIcon} - Usuarios: ${data.userCount}👥 - Repuestos: ${data.databaseSize}⚙️]`;
+      document.getElementById('status-bar').textContent = statusText;
+    })
+    .catch(error => console.error('Error fetching status:', error));
+}
+
+// Update the status bar every 5 seconds
+setInterval(updateStatusBar, 5000); 
+
+document.addEventListener('DOMContentLoaded', () => {
+  cargarDatos();
+  updateStatusBar(); // Update the status bar on page load
+});
