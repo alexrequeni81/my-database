@@ -202,7 +202,7 @@ function updateStatusBar() {
 }
 
 // Update the status bar every 5 seconds
-setInterval(updateStatusBar, 5000); 
+setInterval(updateStatusBar, 1000); 
 
 document.addEventListener('DOMContentLoaded', () => {
   cargarDatos();
