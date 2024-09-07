@@ -40,6 +40,14 @@
         <button onclick="resetearTodos()">Resetear Todos</button> <!-- Botón de reseteo masivo -->
         <div id="error" class="alert" style="display: none;"></div>
         <div id="success" class="alert" style="display: none;"></div>
+
+        <!-- Pagination Buttons -->
+        <div class="pagination">
+            <button id="prevButton" onclick="loadPreviousPage()" disabled>Anterior</button>
+            <span id="currentPage">1</span>
+            <button id="nextButton" onclick="loadNextPage()">Siguiente</button>
+        </div>
     </div>
     <script src="scripts.js"></script>
 </body>
+</html>
