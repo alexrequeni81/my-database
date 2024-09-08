@@ -232,8 +232,28 @@ window.addEventListener('resize', function() {
 document.addEventListener('DOMContentLoaded', () => {
     cargarDatos();
     actualizarConteoTotal();
-    // Otras inicializaciones si las hay
+    verificarEstadoServidor();
 });
+
+function verificarEstadoServidor() {
+    fetch('/api/status')
+        .then(response => response.json())
+        .then(data => {
+            if (data.serverStatus === 'OK' && data.dbStatus === 'OK') {
+                document.getElementById('serverStatus').textContent = '🟢';
+            } else if (data.serverStatus === 'OK' && data.dbStatus === 'ERROR') {
+                document.getElementById('serverStatus').textContent = '🟡';
+            } else {
+                document.getElementById('serverStatus').textContent = '🔴';
+            }
+        })
+        .catch(() => {
+            document.getElementById('serverStatus').textContent = '🔴';
+        });
+}
+
+// Llamar a la función cada 30 segundos
+setInterval(verificarEstadoServidor, 30000);
 
 function actualizarConteoTotal() {
     fetch('/api/totalRecords')
