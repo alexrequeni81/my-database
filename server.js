@@ -7,6 +7,7 @@ const cron = require('node-cron');
 const axios = require('axios');
 const http = require('http');
 const socketIo = require('socket.io');
+const Excel = require('exceljs');
 
 const app = express();
 const server = http.createServer(app);
@@ -286,11 +287,68 @@ app.get('/api/status', async (req, res) => {
 app.get('/api/download', async (req, res) => {
     try {
         const parts = await Part.find({});
-        res.setHeader('Content-Type', 'application/json');
-        res.setHeader('Content-Disposition', 'attachment; filename=repuestos.json');
-        res.json(parts);
+        
+        const workbook = new Excel.Workbook();
+        const worksheet = workbook.addWorksheet('Repuestos');
+        
+        worksheet.columns = [
+            { header: 'REFERENCIA', key: 'REFERENCIA', width: 15 },
+            { header: 'DESCRIPCIÓN', key: 'DESCRIPCIÓN', width: 30 },
+            { header: 'MÁQUINA', key: 'MÁQUINA', width: 15 },
+            { header: 'GRUPO', key: 'GRUPO', width: 15 },
+            { header: 'COMENTARIO', key: 'COMENTARIO', width: 30 },
+            { header: 'CANTIDAD', key: 'CANTIDAD', width: 10 }
+        ];
+
+        parts.forEach(part => {
+            worksheet.addRow(part);
+        });
+
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', 'attachment; filename=repuestos.xlsx');
+
+        await workbook.xlsx.write(res);
+        res.end();
     } catch (error) {
         console.error('Error al descargar los datos:', error);
         res.status(500).json({ error: 'Error al descargar los datos' });
+    }
+});
+
+// Nueva ruta para cargar datos desde Excel
+app.post('/api/upload', async (req, res) => {
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).send('No se ha subido ningún archivo.');
+    }
+
+    let excelFile = req.files.file;
+    let workbook = new Excel.Workbook();
+    
+    try {
+        await workbook.xlsx.load(excelFile.data);
+        let worksheet = workbook.getWorksheet(1);
+        let newParts = [];
+
+        worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
+            if (rowNumber > 1) { // Ignorar la fila de encabezados
+                let newPart = {
+                    REFERENCIA: row.getCell(1).value,
+                    DESCRIPCIÓN: row.getCell(2).value,
+                    MÁQUINA: row.getCell(3).value,
+                    GRUPO: row.getCell(4).value,
+                    COMENTARIO: row.getCell(5).value,
+                    CANTIDAD: row.getCell(6).value
+                };
+                newParts.push(newPart);
+            }
+        });
+
+        await Part.deleteMany({}); // Eliminar todos los registros existentes
+        await Part.insertMany(newParts); // Insertar los nuevos registros
+
+        res.status(200).send('Datos cargados exitosamente');
+    } catch (error) {
+        console.error('Error al cargar los datos:', error);
+        res.status(500).send('Error al procesar el archivo');
     }
 });
