@@ -269,3 +269,15 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
+
+// Nueva ruta para verificar el estado del servidor
+app.get('/api/status', async (req, res) => {
+    try {
+        // Verificar la conexión a la base de datos
+        await mongoose.connection.db.admin().ping();
+        res.status(200).json({ serverStatus: 'OK', dbStatus: 'OK' });
+    } catch (error) {
+        console.error('Error al verificar el estado de la base de datos:', error);
+        res.status(200).json({ serverStatus: 'OK', dbStatus: 'ERROR' });
+    }
+});
