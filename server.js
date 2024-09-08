@@ -5,9 +5,24 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const cron = require('node-cron');
 const axios = require('axios');
+const http = require('http');
+const socketIo = require('socket.io');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const server = http.createServer(app);
+const io = socketIo(server);
+
+let activeUsers = 0;
+
+io.on('connection', (socket) => {
+    activeUsers++;
+    io.emit('userCount', activeUsers);
+
+    socket.on('disconnect', () => {
+        activeUsers--;
+        io.emit('userCount', activeUsers);
+    });
+});
 
 // Middleware para logging de las solicitudes
 app.use((req, res, next) => {
@@ -250,6 +265,6 @@ updateTotalRecords();
 cron.schedule('*/5 * * * *', updateTotalRecords);
 
 // Iniciar el servidor
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
