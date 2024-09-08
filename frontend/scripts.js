@@ -117,6 +117,9 @@ function crearRepuesto() {
         cargarDatos(currentPage);
         cancelarEdicion();
     })
+    .then(() => {
+        actualizarConteoTotal();
+    })
     .catch(error => mostrarError(`Error al ${isEditing ? 'editar' : 'guardar'} el repuesto.`));
 }
 
@@ -153,6 +156,7 @@ function eliminarRepuesto(id) {
             .then(() => {
                 mostrarExito('Repuesto eliminado correctamente');
                 cargarDatos(currentPage);
+                actualizarConteoTotal();
             })
             .catch(error => mostrarError('Error al eliminar el repuesto.'));
     }
@@ -167,6 +171,7 @@ function resetearTodos() {
                 if (data.success) {
                     mostrarExito('Todos los repuestos reseteados correctamente');
                     cargarDatos(1);
+                    actualizarConteoTotal();
                 } else {
                     mostrarError('Error al resetear los repuestos');
                 }
@@ -220,5 +225,15 @@ window.addEventListener('resize', function() {
 
 document.addEventListener('DOMContentLoaded', () => {
     cargarDatos();
+    actualizarConteoTotal();
     // Otras inicializaciones si las hay
 });
+
+function actualizarConteoTotal() {
+    fetch('/api/totalRecords')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('totalRecords').textContent = `Total de registros: ${data.total}`;
+        })
+        .catch(error => console.error('Error al obtener el total de registros:', error));
+}
