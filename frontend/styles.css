@@ -264,6 +264,7 @@ body {
     /* Estilo para el botón de expansión */
     .expand-button {
         display: inline-block;
+        background: none;
         border: none;
         cursor: pointer;
         font-size: 1.2em;
@@ -343,4 +344,14 @@ body {
 
   .info-item:last-child span {
     font-size: 1.2em;
+  }
+  
+  .progress-bar {
+    width: 0;
+    height: 5px;
+    background-color: #4CAF50;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transition: width 0.5s;
   }
