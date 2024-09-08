@@ -321,3 +321,11 @@ body {
         margin-bottom: 10px;
     }
   }
+  
+  .info-item:last-child {
+    margin-left: 10px;
+  }
+
+  .info-item:last-child span {
+    font-size: 1.2em;
+  }
