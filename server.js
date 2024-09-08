@@ -328,10 +328,23 @@ app.post('/api/upload', async (req, res) => {
     try {
         await workbook.xlsx.load(excelFile.data);
         let worksheet = workbook.getWorksheet(1);
+
+        // Verificar los encabezados
+        const expectedHeaders = ['REFERENCIA', 'DESCRIPCIÓN', 'MÁQUINA', 'GRUPO', 'COMENTARIO', 'CANTIDAD'];
+        const actualHeaders = worksheet.getRow(1).values.slice(1); // Ignorar la primera celda vacía
+
+        if (!arraysEqual(expectedHeaders, actualHeaders)) {
+            return res.status(400).send('El formato del archivo no es válido. Verifique los encabezados de las columnas.');
+        }
+
         let newParts = [];
 
         worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
             if (rowNumber > 1) { // Ignorar la fila de encabezados
+                if (row.values.length !== 7) { // 6 columnas + 1 (la primera celda está vacía)
+                    throw new Error(`La fila ${rowNumber} no tiene el número correcto de columnas.`);
+                }
+
                 let newPart = {
                     REFERENCIA: row.getCell(1).value,
                     DESCRIPCIÓN: row.getCell(2).value,
@@ -340,10 +353,13 @@ app.post('/api/upload', async (req, res) => {
                     COMENTARIO: row.getCell(5).value,
                     CANTIDAD: row.getCell(6).value
                 };
+
                 // Validación básica
-                if (newPart.REFERENCIA && newPart.DESCRIPCIÓN && newPart.MÁQUINA && newPart.GRUPO && !isNaN(newPart.CANTIDAD)) {
-                    newParts.push(newPart);
+                if (!newPart.REFERENCIA || !newPart.DESCRIPCIÓN || !newPart.MÁQUINA || !newPart.GRUPO || isNaN(newPart.CANTIDAD)) {
+                    throw new Error(`La fila ${rowNumber} contiene datos inválidos.`);
                 }
+
+                newParts.push(newPart);
             }
         });
 
@@ -367,12 +383,20 @@ app.post('/api/upload', async (req, res) => {
             await session.abortTransaction();
             session.endSession();
             console.error('Error al cargar los datos:', error);
-            res.status(500).send('Error al procesar el archivo');
+            res.status(500).send('Error al procesar el archivo: ' + error.message);
         }
     } catch (error) {
         console.error('Error al cargar los datos:', error);
-        res.status(500).send('Error al procesar el archivo');
+        res.status(400).send('Error al procesar el archivo: ' + error.message);
     }
 });
+
+function arraysEqual(a, b) {
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+        if (a[i] !== b[i]) return false;
+    }
+    return true;
+}
 
 app.use(fileUpload());
