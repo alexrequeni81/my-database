@@ -379,3 +379,25 @@ body {
   .admin-button {
     display: none;
   }
+  
+  @media (max-width: 768px) {
+    body {
+        font-size: calc(16px + 0.5vw); /* Aumenta gradualmente según el ancho de la pantalla */
+    }
+
+    h1 {
+        font-size: calc(20px + 1vw);
+    }
+
+    #searchInput {
+        font-size: calc(14px + 0.5vw);
+    }
+
+    table {
+        font-size: calc(14px + 0.5vw);
+    }
+
+    .pagination button {
+        font-size: calc(14px + 0.5vw);
+    }
+  }
