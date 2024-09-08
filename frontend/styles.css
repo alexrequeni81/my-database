@@ -401,3 +401,7 @@ body {
         font-size: calc(14px + 0.5vw);
     }
   }
+  
+  .actions-column {
+    display: none;
+  }
