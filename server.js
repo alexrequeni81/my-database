@@ -340,14 +340,35 @@ app.post('/api/upload', async (req, res) => {
                     COMENTARIO: row.getCell(5).value,
                     CANTIDAD: row.getCell(6).value
                 };
-                newParts.push(newPart);
+                // Validación básica
+                if (newPart.REFERENCIA && newPart.DESCRIPCIÓN && newPart.MÁQUINA && newPart.GRUPO && !isNaN(newPart.CANTIDAD)) {
+                    newParts.push(newPart);
+                }
             }
         });
 
-        await Part.deleteMany({}); // Eliminar todos los registros existentes
-        await Part.insertMany(newParts); // Insertar los nuevos registros
+        if (newParts.length === 0) {
+            return res.status(400).send('El archivo no contiene datos válidos.');
+        }
 
-        res.status(200).send('Datos cargados exitosamente');
+        const session = await mongoose.startSession();
+        session.startTransaction();
+
+        try {
+            await Part.deleteMany({}, { session });
+            await Part.insertMany(newParts, { session });
+            await session.commitTransaction();
+            session.endSession();
+
+            await updateTotalRecords();
+
+            res.status(200).send('Datos cargados exitosamente');
+        } catch (error) {
+            await session.abortTransaction();
+            session.endSession();
+            console.error('Error al cargar los datos:', error);
+            res.status(500).send('Error al procesar el archivo');
+        }
     } catch (error) {
         console.error('Error al cargar los datos:', error);
         res.status(500).send('Error al procesar el archivo');
