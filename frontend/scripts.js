@@ -5,6 +5,12 @@ let searchQuery = '';
 let isEditing = false;
 let editingId = null;
 
+const socket = io();
+
+socket.on('userCount', (count) => {
+    document.getElementById('userCount').textContent = `Usuarios activos: ${count}`;
+});
+
 function cargarDatos(page = 1, search = '') {
     fetch(`/api/parts?page=${page}&limit=${limit}&search=${search}`)
         .then(response => response.json())
