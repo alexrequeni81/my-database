@@ -10,8 +10,8 @@ Este proyecto es una aplicación web para la gestión de repuestos, diseñada pa
 
 3. **Gestión de repuestos**: 
    - Añadir nuevos repuestos
-   - Editar repuestos existentes
-   - Eliminar repuestos
+   - Editar repuestos existentes (admin)
+   - Eliminar repuestos (admin)
 
 4. **Modo administrador**: 
    - Acceso a funciones avanzadas mediante autenticación
