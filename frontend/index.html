@@ -62,9 +62,9 @@
             <button type="button" id="cancelButton" onclick="cancelarEdicion()" style="display: none;">Cancelar</button>
         </form>
         </div>
-        <button onclick="resetearTodos()">Resetear Todos</button> <!-- Botón de reseteo masivo -->
-        <button onclick="descargarDatos()">Descargar Datos</button>
-        <button onclick="document.getElementById('fileInput').click()">Cargar Datos</button>
+        <button class="admin-button" onclick="resetearTodos()">Resetear Todos</button> <!-- Botón de reseteo masivo -->
+        <button class="admin-button" onclick="descargarDatos()">Descargar Datos</button>
+        <button class="admin-button" onclick="document.getElementById('fileInput').click()">Cargar Datos</button>
         <input type="file" id="fileInput" style="display: none;" onchange="cargarArchivoExcel(this.files[0])">
         <div id="error" class="alert" style="display: none;"></div>
         <div id="success" class="alert" style="display: none;"></div>
