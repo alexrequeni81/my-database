@@ -69,6 +69,18 @@
         <div id="error" class="alert" style="display: none;"></div>
         <div id="success" class="alert" style="display: none;"></div>
     </div>
+
+    <!-- Modal de autenticación -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <h2>Autenticación de Administrador</h2>
+            <input type="password" id="adminPassword" placeholder="Contraseña">
+            <button onclick="authenticateAdmin()">Iniciar sesión</button>
+        </div>
+    </div>
+
+    <div id="adminArea" style="position: fixed; bottom: 10px; right: 10px; width: 20px; height: 20px;"></div>
+
     <script src="scripts.js"></script>
 </body>
 </html>
