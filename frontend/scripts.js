@@ -24,6 +24,10 @@ function cargarDatos(page = 1, search = '') {
                 data.parts.forEach(part => {
                     const row = document.createElement('tr');
                     row.setAttribute('data-id', part._id);
+                    const actionButtons = isAdmin ? `
+                        <button class="edit-button" onclick="editarRepuesto('${part._id}')">✏️</button>
+                        <button class="delete-button" onclick="eliminarRepuesto('${part._id}')">🗑️</button>
+                    ` : '';
                     row.innerHTML = `
                         <td data-label="REFERENCIA">
                             ${part.REFERENCIA || ''}
@@ -35,8 +39,7 @@ function cargarDatos(page = 1, search = '') {
                         <td data-label="COMENTARIO">${part.COMENTARIO || ''}</td>
                         <td data-label="CANTIDAD">${part.CANTIDAD !== undefined && part.CANTIDAD !== null ? part.CANTIDAD : ''}</td>
                         <td class="action-buttons">
-                            <button class="edit-button" onclick="editarRepuesto('${part._id}')">✏️</button>
-                            <button class="delete-button" onclick="eliminarRepuesto('${part._id}')">🗑️</button>
+                            ${actionButtons}
                         </td>
                     `;
                     tableBody.appendChild(row);
@@ -131,6 +134,10 @@ function crearRepuesto() {
 }
 
 function editarRepuesto(id) {
+    if (!isAdmin) {
+        alert('No tienes permisos para realizar esta acción');
+        return;
+    }
     const row = document.querySelector(`tr[data-id="${id}"]`);
     const cells = row.querySelectorAll('td');
 
@@ -158,6 +165,10 @@ function cancelarEdicion() {
 }
 
 function eliminarRepuesto(id) {
+    if (!isAdmin) {
+        alert('No tienes permisos para realizar esta acción');
+        return;
+    }
     if (confirm('¿Está seguro de que desea eliminar este repuesto?')) {
         fetch(`/api/parts/${id}`, { method: 'DELETE' })
             .then(() => {
@@ -171,6 +182,10 @@ function eliminarRepuesto(id) {
 
 // Función para resetear todos los repuestos
 function resetearTodos() {
+    if (!isAdmin) {
+        alert('No tienes permisos para realizar esta acción');
+        return;
+    }
     if (confirm('¿Está seguro de que desea resetear todos los repuestos?')) {
         fetch(`/api/resetAllParts`, { method: 'DELETE' })
             .then(response => response.json())
@@ -188,6 +203,10 @@ function resetearTodos() {
 }
 
 function descargarDatos() {
+    if (!isAdmin) {
+        alert('No tienes permisos para realizar esta acción');
+        return;
+    }
     mostrarExito('Preparando la descarga...');
     fetch('/api/download')
         .then(response => {
@@ -214,6 +233,10 @@ function descargarDatos() {
 }
 
 function cargarArchivoExcel(file) {
+    if (!isAdmin) {
+        alert('No tienes permisos para realizar esta acción');
+        return;
+    }
     if (!file) {
         mostrarError('No se ha seleccionado ningún archivo.');
         return;
@@ -331,4 +354,27 @@ function actualizarConteoTotal() {
             document.getElementById('totalRecords').textContent = data.total;
         })
         .catch(error => console.error('Error al obtener el total de registros:', error));
+}
+
+let isAdmin = false;
+
+document.getElementById('adminArea').addEventListener('dblclick', function() {
+    document.getElementById('authModal').style.display = 'block';
+});
+
+function authenticateAdmin() {
+    const password = document.getElementById('adminPassword').value;
+    // En un entorno real, deberías verificar la contraseña en el servidor
+    if (password === 'admin123') { // Cambia esto por una contraseña segura
+        isAdmin = true;
+        document.getElementById('authModal').style.display = 'none';
+        showAdminButtons();
+    } else {
+        alert('Contraseña incorrecta');
+    }
+}
+
+function showAdminButtons() {
+    const adminButtons = document.querySelectorAll('.admin-button');
+    adminButtons.forEach(button => button.style.display = 'inline-block');
 }
