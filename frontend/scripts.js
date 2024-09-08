@@ -194,12 +194,33 @@ function descargarDatos() {
             const a = document.createElement('a');
             a.style.display = 'none';
             a.href = url;
-            a.download = 'repuestos.json';
+            a.download = 'repuestos.xlsx';
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);
         })
         .catch(error => console.error('Error al descargar los datos:', error));
+}
+
+function cargarDatos(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(result => {
+        console.log(result);
+        mostrarExito('Datos cargados exitosamente');
+        cargarDatos(); // Recargar la tabla
+        actualizarConteoTotal();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        mostrarError('Error al cargar los datos');
+    });
 }
 
 function mostrarExito(mensaje) {
