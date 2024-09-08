@@ -6,6 +6,7 @@
     <link rel="icon" href="assets/icono.ico" type="image/x-icon">
     <title>SAT - REPUESTOS</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
     <div class="container">
@@ -50,6 +51,7 @@
         <button onclick="resetearTodos()">Resetear Todos</button> <!-- Botón de reseteo masivo -->
         <div id="error" class="alert" style="display: none;"></div>
         <div id="success" class="alert" style="display: none;"></div>
+        <div id="userCount">Usuarios activos: 0</div>
     </div>
     <script src="scripts.js"></script>
 </body>
