@@ -5,13 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="assets/icono.ico" type="image/x-icon">
     <title>SAT - REPUESTOS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
     <div class="container">
+        <div class="info-bar">
+            <div class="info-item">
+                <i class="fas fa-users"></i>
+                <span id="userCount">0</span>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-database"></i>
+                <span id="totalRecords">0</span>
+            </div>
+        </div>
         <h1>SAT - REPUESTOS</h1>
-        <div id="totalRecords">Total de registros: Cargando...</div>
         <input type="text" id="searchInput" placeholder="Buscar repuestos..." onkeyup="buscarRepuestos()">
         <table id="partsTable">
             <thead>
@@ -51,7 +61,6 @@
         <button onclick="resetearTodos()">Resetear Todos</button> <!-- Botón de reseteo masivo -->
         <div id="error" class="alert" style="display: none;"></div>
         <div id="success" class="alert" style="display: none;"></div>
-        <div id="userCount">Usuarios activos: 0</div>
     </div>
     <script src="scripts.js"></script>
 </body>
