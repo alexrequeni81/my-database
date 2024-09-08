@@ -108,6 +108,7 @@ app.post('/api/parts', async (req, res) => {
         });
 
         await newPart.save();
+        await updateTotalRecords();
 
         res.status(201).json({
             message: 'Repuesto creado con éxito',
@@ -178,6 +179,7 @@ app.put('/api/parts/:id', async (req, res) => {
 app.delete('/api/parts/:id', async (req, res) => {
     try {
         await Part.findByIdAndDelete(req.params.id);
+        await updateTotalRecords();
         res.status(204).send();
     } catch (err) {
         console.error('Error al eliminar el repuesto:', err);
@@ -217,12 +219,35 @@ app.delete('/api/resetAllParts', async (req, res) => {
 
         await Part.deleteMany({});
         await Part.insertMany(allPartsData);
+        await updateTotalRecords();
 
         res.json({ success: true, message: 'Todos los repuestos han sido reseteados' });
     } catch (err) {
         res.status(500).json({ success: false, message: 'Error interno del servidor' });
     }
 });
+
+// Nueva ruta para obtener el conteo total de registros
+let totalRecords = 0;
+app.get('/api/totalRecords', (req, res) => {
+    res.json({ total: totalRecords });
+});
+
+// Función para actualizar el conteo total
+async function updateTotalRecords() {
+    try {
+        totalRecords = await Part.countDocuments();
+        console.log(`Total de registros actualizado: ${totalRecords}`);
+    } catch (err) {
+        console.error('Error al actualizar el total de registros:', err);
+    }
+}
+
+// Actualizar el conteo al iniciar el servidor
+updateTotalRecords();
+
+// Actualizar el conteo cada 5 minutos
+cron.schedule('*/5 * * * *', updateTotalRecords);
 
 // Iniciar el servidor
 app.listen(PORT, () => {
