@@ -220,7 +220,7 @@ body {
         border: none;
         position: relative;
         padding-left: 50%;
-        text-align: left;
+        text-align: left; /* Alinear a la izquierda */
     }
     
     td:before {
@@ -232,6 +232,7 @@ body {
         white-space: nowrap;
         content: attr(data-label);
         font-weight: bold;
+        text-align: right; /* Alinear a la derecha */
     }
     
     /* Ocultar todas las celdas excepto la primera (REFERENCIA) por defecto */
@@ -262,5 +263,19 @@ body {
         display: flex;
         justify-content: center;
         margin-top: 20px;
+    }
+  }
+  
+  /* Mantener los estilos originales para pantallas más grandes */
+  @media (min-width: 769px) {
+    th {
+        text-align: center;
+    }
+
+    td:nth-child(3), /* Columna Máquina */
+    td:nth-child(4), /* Columna Grupo */
+    td:nth-child(6), /* Columna Cantidad */
+    td:nth-child(7) { /* Columna Acciones (botones) */
+        text-align: center;
     }
   }
