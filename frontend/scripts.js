@@ -24,10 +24,6 @@ function cargarDatos(page = 1, search = '') {
                 data.parts.forEach(part => {
                     const row = document.createElement('tr');
                     row.setAttribute('data-id', part._id);
-                    const actionButtons = isAdmin ? `
-                        <button class="edit-button" onclick="editarRepuesto('${part._id}')">✏️</button>
-                        <button class="delete-button" onclick="eliminarRepuesto('${part._id}')">🗑️</button>
-                    ` : '';
                     row.innerHTML = `
                         <td data-label="REFERENCIA">
                             ${part.REFERENCIA || ''}
@@ -39,7 +35,8 @@ function cargarDatos(page = 1, search = '') {
                         <td data-label="COMENTARIO">${part.COMENTARIO || ''}</td>
                         <td data-label="CANTIDAD">${part.CANTIDAD !== undefined && part.CANTIDAD !== null ? part.CANTIDAD : ''}</td>
                         <td class="action-buttons">
-                            ${actionButtons}
+                            <button class="edit-button" onclick="editarRepuesto('${part._id}')" style="display: ${isAdmin ? 'inline-block' : 'none'}">✏️</button>
+                            <button class="delete-button" onclick="eliminarRepuesto('${part._id}')" style="display: ${isAdmin ? 'inline-block' : 'none'}">🗑️</button>
                         </td>
                     `;
                     tableBody.appendChild(row);
@@ -377,4 +374,5 @@ function authenticateAdmin() {
 function showAdminButtons() {
     const adminButtons = document.querySelectorAll('.admin-button');
     adminButtons.forEach(button => button.style.display = 'inline-block');
+    cargarDatos(currentPage, searchQuery); // Recarga los datos para mostrar los botones de editar y borrar
 }
