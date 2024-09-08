@@ -172,6 +172,7 @@ body {
   
   /* Estilo para el botón "+" */
   .expand-button {
+    display: none;
     background: none;
     border: none;
     cursor: pointer;
@@ -243,6 +244,7 @@ body {
     
     /* Estilo para el botón de expansión */
     .expand-button {
+      display: inline-block;
       background: none;
       border: none;
       cursor: pointer;
