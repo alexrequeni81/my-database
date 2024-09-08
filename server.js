@@ -8,6 +8,7 @@ const axios = require('axios');
 const http = require('http');
 const socketIo = require('socket.io');
 const Excel = require('exceljs');
+const fileUpload = require('express-fileupload');
 
 const app = express();
 const server = http.createServer(app);
@@ -27,7 +28,7 @@ io.on('connection', (socket) => {
 
 // Middleware para logging de las solicitudes
 app.use((req, res, next) => {
-    console.log(`Request URL: ${req.url}`);
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
     next();
 });
 
@@ -352,3 +353,5 @@ app.post('/api/upload', async (req, res) => {
         res.status(500).send('Error al procesar el archivo');
     }
 });
+
+app.use(fileUpload());
