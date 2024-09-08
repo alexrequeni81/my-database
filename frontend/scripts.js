@@ -1,4 +1,5 @@
 let currentPage = 1;
+let totalPages = 1;
 const limit = 10;
 let searchQuery = '';
 let isEditing = false;
@@ -33,6 +34,14 @@ function cargarDatos(page = 1, search = '') {
                     tableBody.appendChild(row);
                 });
             }
+
+            // Actualizar la paginación
+            currentPage = data.page;
+            totalPages = data.pages;
+            document.getElementById('currentPage').textContent = currentPage;
+            document.getElementById('prevButton').disabled = currentPage === 1;
+            document.getElementById('nextButton').disabled = currentPage === totalPages;
+
             if (window.innerWidth <= 768) {
                 addExpandButtonListeners();
             }
@@ -178,6 +187,20 @@ function mostrarError(mensaje) {
     errorDiv.innerText = mensaje;
     errorDiv.style.display = 'block';
     setTimeout(() => errorDiv.style.display = 'none', 5000);
+}
+
+function loadNextPage() {
+    if (currentPage < totalPages) {
+        currentPage++;
+        cargarDatos(currentPage, searchQuery);
+    }
+}
+
+function loadPreviousPage() {
+    if (currentPage > 1) {
+        currentPage--;
+        cargarDatos(currentPage, searchQuery);
+    }
 }
 
 window.addEventListener('resize', function() {
