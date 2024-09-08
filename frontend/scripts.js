@@ -52,7 +52,7 @@ function cargarDatos(page = 1, search = '') {
                 addExpandButtonListeners();
             }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => console.error('Error al cargar los datos:', error));
 }
 
 function addExpandButtonListeners() {
@@ -202,7 +202,12 @@ function descargarDatos() {
         .catch(error => console.error('Error al descargar los datos:', error));
 }
 
-function cargarDatos(file) {
+function cargarArchivoExcel(file) {
+    if (!file) {
+        mostrarError('No se ha seleccionado ningún archivo.');
+        return;
+    }
+
     const formData = new FormData();
     formData.append('file', file);
 
@@ -210,16 +215,21 @@ function cargarDatos(file) {
         method: 'POST',
         body: formData
     })
-    .then(response => response.text())
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => { throw new Error(text) });
+        }
+        return response.text();
+    })
     .then(result => {
         console.log(result);
         mostrarExito('Datos cargados exitosamente');
-        cargarDatos(); // Recargar la tabla
+        cargarDatos(1); // Recargar la primera página de datos
         actualizarConteoTotal();
     })
     .catch(error => {
         console.error('Error:', error);
-        mostrarError('Error al cargar los datos');
+        mostrarError('Error al cargar los datos: ' + error.message);
     });
 }
 
