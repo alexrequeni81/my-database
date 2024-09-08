@@ -236,7 +236,7 @@ function cargarArchivoExcel(file) {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Error en la carga');
+            return response.text().then(text => { throw new Error(text) });
         }
         return response.text();
     })
