@@ -281,3 +281,16 @@ app.get('/api/status', async (req, res) => {
         res.status(200).json({ serverStatus: 'OK', dbStatus: 'ERROR' });
     }
 });
+
+// Nueva ruta para descargar los datos
+app.get('/api/download', async (req, res) => {
+    try {
+        const parts = await Part.find({});
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Content-Disposition', 'attachment; filename=repuestos.json');
+        res.json(parts);
+    } catch (error) {
+        console.error('Error al descargar los datos:', error);
+        res.status(500).json({ error: 'Error al descargar los datos' });
+    }
+});
