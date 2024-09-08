@@ -173,17 +173,34 @@ body {
   /* Estilo para el botón "+" */
   .expand-button {
     display: none;
-    background: none;
+    background-color: #007bff;
+    color: white;
     border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 18px;
+    line-height: 24px;
+    text-align: center;
     cursor: pointer;
-    font-size: 1.2em;
-    /* Agrega más estilos según tu preferencia */
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
   }
-  
-  /* Mostrar las columnas al hacer clic en el botón "+" */
-  .show {
-    display: table-cell; /* O flex, si la tabla usa flexbox */
-    transition: all 0.3s ease; /* Animación de transición */
+
+  .expand-button.expanded {
+    background-color: #dc3545;
+  }
+
+  @media (max-width: 768px) {
+    .expand-button {
+      display: inline-block;
+    }
+
+    td:first-child {
+      padding-right: 40px; /* Espacio para el botón de expansión */
+    }
   }
   
   /* Ocultar las columnas por defecto */
