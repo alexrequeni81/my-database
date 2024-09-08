@@ -188,8 +188,14 @@ function resetearTodos() {
 }
 
 function descargarDatos() {
+    mostrarExito('Preparando la descarga...');
     fetch('/api/download')
-        .then(response => response.blob())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error en la descarga');
+            }
+            return response.blob();
+        })
         .then(blob => {
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -199,8 +205,12 @@ function descargarDatos() {
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);
+            mostrarExito('Descarga completada');
         })
-        .catch(error => console.error('Error al descargar los datos:', error));
+        .catch(error => {
+            console.error('Error al descargar los datos:', error);
+            mostrarError('Error al descargar los datos');
+        });
 }
 
 function cargarArchivoExcel(file) {
@@ -209,8 +219,16 @@ function cargarArchivoExcel(file) {
         return;
     }
 
+    if (!confirm('¿Está seguro de que desea cargar este archivo? Esta acción reemplazará todos los datos existentes.')) {
+        return;
+    }
+
     const formData = new FormData();
     formData.append('file', file);
+
+    const progressBar = document.createElement('div');
+    progressBar.className = 'progress-bar';
+    document.body.appendChild(progressBar);
 
     fetch('/api/upload', {
         method: 'POST',
@@ -218,19 +236,22 @@ function cargarArchivoExcel(file) {
     })
     .then(response => {
         if (!response.ok) {
-            return response.text().then(text => { throw new Error(text) });
+            throw new Error('Error en la carga');
         }
         return response.text();
     })
     .then(result => {
         console.log(result);
         mostrarExito('Datos cargados exitosamente');
-        cargarDatos(1); // Recargar la primera página de datos
+        cargarDatos(1);
         actualizarConteoTotal();
     })
     .catch(error => {
         console.error('Error:', error);
         mostrarError('Error al cargar los datos: ' + error.message);
+    })
+    .finally(() => {
+        document.body.removeChild(progressBar);
     });
 }
 
