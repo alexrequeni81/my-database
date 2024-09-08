@@ -16,10 +16,17 @@ function cargarDatos(page = 1, search = '') {
         .then(response => response.json())
         .then(data => {
             const tableBody = document.querySelector('#partsTable tbody');
+            const tableHead = document.querySelector('#partsTable thead tr');
             tableBody.innerHTML = '';
 
+            // Ocultar o mostrar la columna de acciones en el encabezado
+            const actionHeader = tableHead.querySelector('th:last-child');
+            if (actionHeader) {
+                actionHeader.style.display = isAdmin ? '' : 'none';
+            }
+
             if (data.parts.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="7">No se encontraron repuestos</td></tr>';
+                tableBody.innerHTML = `<tr><td colspan="${isAdmin ? 7 : 6}">No se encontraron repuestos</td></tr>`;
             } else {
                 data.parts.forEach(part => {
                     const row = document.createElement('tr');
@@ -34,10 +41,12 @@ function cargarDatos(page = 1, search = '') {
                         <td data-label="GRUPO">${part.GRUPO || ''}</td>
                         <td data-label="COMENTARIO">${part.COMENTARIO || ''}</td>
                         <td data-label="CANTIDAD">${part.CANTIDAD !== undefined && part.CANTIDAD !== null ? part.CANTIDAD : ''}</td>
+                        ${isAdmin ? `
                         <td class="action-buttons">
-                            <button class="edit-button" onclick="editarRepuesto('${part._id}')" style="display: ${isAdmin ? 'inline-block' : 'none'}">✏️</button>
-                            <button class="delete-button" onclick="eliminarRepuesto('${part._id}')" style="display: ${isAdmin ? 'inline-block' : 'none'}">🗑️</button>
+                            <button class="edit-button" onclick="editarRepuesto('${part._id}')">✏️</button>
+                            <button class="delete-button" onclick="eliminarRepuesto('${part._id}')">🗑️</button>
                         </td>
+                        ` : ''}
                     `;
                     tableBody.appendChild(row);
                 });
@@ -374,5 +383,12 @@ function authenticateAdmin() {
 function showAdminButtons() {
     const adminButtons = document.querySelectorAll('.admin-button');
     adminButtons.forEach(button => button.style.display = 'inline-block');
-    cargarDatos(currentPage, searchQuery); // Recarga los datos para mostrar los botones de editar y borrar
+    
+    // Mostrar la columna de acciones en el encabezado
+    const actionHeader = document.querySelector('#partsTable thead th:last-child');
+    if (actionHeader) {
+        actionHeader.style.display = '';
+    }
+    
+    cargarDatos(currentPage, searchQuery);
 }
