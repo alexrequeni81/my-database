@@ -14,11 +14,12 @@ function cargarDatos(page = 1, search = '') {
             if (data.parts.length === 0) {
                 tableBody.innerHTML = '<tr><td colspan="7">No se encontraron repuestos</td></tr>';
             } else {
+                const isMobile = window.innerWidth <= 768;
                 data.parts.forEach(part => {
                     const row = document.createElement('tr');
                     row.setAttribute('data-id', part._id);
                     row.innerHTML = `
-                        <td data-label="REFERENCIA">${part.REFERENCIA || ''}<button class="expand-button">+</button></td>
+                        <td data-label="REFERENCIA">${part.REFERENCIA || ''}${isMobile ? '<button class="expand-button">+</button>' : ''}</td>
                         <td data-label="DESCRIPCIÓN">${part.DESCRIPCIÓN || ''}</td>
                         <td data-label="MÁQUINA">${part.MÁQUINA || ''}</td>
                         <td data-label="GRUPO">${part.GRUPO || ''}</td>
@@ -32,24 +33,28 @@ function cargarDatos(page = 1, search = '') {
                     tableBody.appendChild(row);
                 });
             }
-            addExpandButtonListeners();
+            if (window.innerWidth <= 768) {
+                addExpandButtonListeners();
+            }
         })
         .catch(error => console.error('Error:', error));
 }
 
 function addExpandButtonListeners() {
-    const expandButtons = document.querySelectorAll('.expand-button');
-    expandButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            const row = this.closest('tr');
-            const cells = row.querySelectorAll('td:not(:first-child):not(:last-child)');
-            cells.forEach(cell => {
-                cell.style.display = cell.style.display === 'block' ? 'none' : 'block';
+    if (window.innerWidth <= 768) {
+        const expandButtons = document.querySelectorAll('.expand-button');
+        expandButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const row = this.closest('tr');
+                const cells = row.querySelectorAll('td:not(:first-child):not(:last-child)');
+                cells.forEach(cell => {
+                    cell.style.display = cell.style.display === 'block' ? 'none' : 'block';
+                });
+                this.textContent = this.textContent === '+' ? '-' : '+';
             });
-            this.textContent = this.textContent === '+' ? '-' : '+';
         });
-    });
+    }
 }
 
 function buscarRepuestos() {
@@ -174,6 +179,21 @@ function mostrarError(mensaje) {
     errorDiv.style.display = 'block';
     setTimeout(() => errorDiv.style.display = 'none', 5000);
 }
+
+window.addEventListener('resize', function() {
+    if (window.innerWidth <= 768) {
+        addExpandButtonListeners();
+    } else {
+        // Restablecer la visualización de la tabla para escritorio
+        const rows = document.querySelectorAll('#partsTable tbody tr');
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            cells.forEach(cell => {
+                cell.style.display = '';
+            });
+        });
+    }
+});
 
 document.addEventListener('DOMContentLoaded', () => {
     cargarDatos();
