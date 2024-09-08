@@ -8,7 +8,7 @@ let editingId = null;
 const socket = io();
 
 socket.on('userCount', (count) => {
-    document.getElementById('userCount').textContent = `Usuarios activos: ${count}`;
+    document.getElementById('userCount').textContent = count;
 });
 
 function cargarDatos(page = 1, search = '') {
@@ -239,7 +239,7 @@ function actualizarConteoTotal() {
     fetch('/api/totalRecords')
         .then(response => response.json())
         .then(data => {
-            document.getElementById('totalRecords').textContent = `Total de registros: ${data.total}`;
+            document.getElementById('totalRecords').textContent = data.total;
         })
         .catch(error => console.error('Error al obtener el total de registros:', error));
 }
