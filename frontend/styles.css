@@ -193,65 +193,74 @@ body {
   
   /* Estilos para dispositivos móviles */
   @media (max-width: 768px) {
+    /* Ocultar elementos en móviles */
+    #addPartForm,
+    #resetearTodos,
+    .edit-button,
+    .delete-button {
+        display: none !important;
+    }
+
     table, thead, tbody, th, td, tr {
-      display: block;
+        display: block;
     }
     
     thead tr {
-      position: absolute;
-      top: -9999px;
-      left: -9999px;
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
     }
     
     tr {
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
     }
     
     td {
-      border: none;
-      position: relative;
-      padding-left: 50%;
-      text-align: left;
+        border: none;
+        position: relative;
+        padding-left: 50%;
+        text-align: left;
     }
     
     td:before {
-      position: absolute;
-      top: 6px;
-      left: 6px;
-      width: 45%;
-      padding-right: 10px;
-      white-space: nowrap;
-      content: attr(data-label);
-      font-weight: bold;
-    }
-    
-    .action-buttons {
-      display: flex;
-      justify-content: flex-start;
-      padding-left: 50%;
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        content: attr(data-label);
+        font-weight: bold;
     }
     
     /* Ocultar todas las celdas excepto la primera (REFERENCIA) por defecto */
     td:not(:first-child) {
-      display: none;
+        display: none;
     }
     
     /* Mostrar la celda de acciones */
     td:last-child {
-      display: block;
+        display: none; /* Cambiado de block a none para ocultar los botones de acción */
     }
     
     /* Estilo para el botón de expansión */
     .expand-button {
-      display: inline-block;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1.2em;
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
+        display: inline-block;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.2em;
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    /* Asegurar que la paginación sea visible */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
     }
   }
