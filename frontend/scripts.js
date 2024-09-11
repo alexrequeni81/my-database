@@ -60,7 +60,9 @@ function cargarDatos(page = 1, search = '') {
             document.getElementById('nextButton').disabled = currentPage === totalPages;
 
             if (window.innerWidth <= 768) {
-                addExpandButtonListeners();
+                requestAnimationFrame(() => {
+                    addExpandButtonListeners();
+                });
             }
         })
         .catch(error => console.error('Error al cargar los datos:', error));
@@ -69,16 +71,24 @@ function cargarDatos(page = 1, search = '') {
 function addExpandButtonListeners() {
     const expandButtons = document.querySelectorAll('.expand-button');
     expandButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            const row = this.closest('tr');
-            const cells = row.querySelectorAll('td:not(:first-child):not(:last-child)');
-            cells.forEach(cell => {
-                cell.style.display = cell.style.display === 'block' ? 'none' : 'block';
-            });
-            this.textContent = this.textContent === '+' ? '-' : '+';
-            this.classList.toggle('expanded');
+        button.removeEventListener('click', toggleRowExpansion);
+        button.addEventListener('click', toggleRowExpansion);
+    });
+}
+
+function toggleRowExpansion(e) {
+    e.preventDefault();
+    const row = this.closest('tr');
+    const cells = row.querySelectorAll('td:not(:first-child):not(:last-child)');
+    const isExpanded = this.classList.contains('expanded');
+
+    // Usar requestAnimationFrame para mejorar el rendimiento
+    requestAnimationFrame(() => {
+        cells.forEach(cell => {
+            cell.style.display = isExpanded ? 'none' : 'block';
         });
+        this.textContent = isExpanded ? '+' : '-';
+        this.classList.toggle('expanded');
     });
 }
 
@@ -312,19 +322,29 @@ function loadPreviousPage() {
     }
 }
 
+// Optimizar el manejo de eventos de redimensionamiento
+let resizeTimeout;
 window.addEventListener('resize', function() {
-    if (window.innerWidth <= 768) {
-        addExpandButtonListeners();
-    } else {
-        // Restablecer la visualización de la tabla para escritorio
-        const rows = document.querySelectorAll('#partsTable tbody tr');
-        rows.forEach(row => {
-            const cells = row.querySelectorAll('td');
-            cells.forEach(cell => {
-                cell.style.display = '';
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+        if (window.innerWidth <= 768) {
+            addExpandButtonListeners();
+        } else {
+            // Restablecer la visualización de la tabla para escritorio
+            const rows = document.querySelectorAll('#partsTable tbody tr');
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                cells.forEach(cell => {
+                    cell.style.display = '';
+                });
+                const expandButton = row.querySelector('.expand-button');
+                if (expandButton) {
+                    expandButton.textContent = '+';
+                    expandButton.classList.remove('expanded');
+                }
             });
-        });
-    }
+        }
+    }, 250);
 });
 
 document.addEventListener('DOMContentLoaded', () => {
