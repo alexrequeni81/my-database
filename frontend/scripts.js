@@ -56,6 +56,7 @@ function cargarDatos(page = 1, search = '') {
             currentPage = data.page;
             totalPages = data.pages;
             document.getElementById('currentPage').textContent = currentPage;
+            document.getElementById('totalPages').textContent = totalPages;
             document.getElementById('prevButton').disabled = currentPage === 1;
             document.getElementById('nextButton').disabled = currentPage === totalPages;
 
